@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import styled from 'styled-components';
 // import { cellsType } from './types';
 import Layout from './UI/Layout';
@@ -17,6 +17,16 @@ const App: React.FC = () => {
     setCells(initCells());
     setScore(0);
   };
+
+  const handleKeyPress = (event: KeyboardEvent) => {
+    console.log(event.code);
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  });
 
   return (
     <Layout>

@@ -1,10 +1,10 @@
 import { cellsType } from '../types';
 
-const create = (x: number, y: number, value: number): cellsType => ({
+const create = (x: number, y: number, value: number, id: string = Math.random().toString(36).substr(2, 9)): cellsType => ({
   x,
   y,
   value,
-  id: Math.random().toString(36).substr(2, 9),
+  id,
 });
 
 export default create;
