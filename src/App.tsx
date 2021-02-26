@@ -11,14 +11,22 @@ import './App.css';
 
 const App: React.FC = () => {
   const [cells, setCells] = useState(initCells());
+  const [score, setScore] = useState(0);
+
+  const handleClickBtnNewGame = () => {
+    setCells(initCells());
+    setScore(0);
+  };
 
   return (
     <Layout>
       <ControlPanel>
-        <Button onClick={() => setCells(initCells())}>
+        <Button onClick={handleClickBtnNewGame}>
           New Game
         </Button>
-        <Score />
+        <Score>
+          {score}
+        </Score>
       </ControlPanel>
       <Field cells={cells} />
     </Layout>
