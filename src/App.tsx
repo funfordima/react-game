@@ -1,12 +1,21 @@
 import React from 'react';
-import './App.css';
+// import styled from 'styled-components';
+import { cellsType } from './types';
+import Layout from './UI/Layout';
+import Field from './UI/Field';
 
-function App() {
+const App: React.FC = () => {
+  const cells: Array<cellsType> = [{
+    x: 0,
+    y: 0,
+    value: 2,
+    id: 0,
+  }];
   return (
-    <div className="App">
-      Hello
-    </div>
+    <Layout>
+      <Field cells={cells} />
+    </Layout>
   );
-}
+};
 
 export default App;
