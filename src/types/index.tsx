@@ -4,4 +4,5 @@ export type cellsType = {
   value: number,
   id: string,
   state: string,
+  by: cellsType | null,
 }

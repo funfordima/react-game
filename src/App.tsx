@@ -6,8 +6,10 @@ import Field from './UI/Field';
 import Score from './UI/Score';
 import Button from './UI/Button';
 import ControlPanel from './UI/ControlPanel';
-import { moveCells, directions, initCells } from './logic';
+import { moveCells, directions, initCells, delAndIncreaseCell } from './logic';
 import './App.css';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const App: React.FC = () => {
   const [cells, setCells] = useState(initCells());
@@ -29,9 +31,11 @@ const App: React.FC = () => {
     KeyS: directions.DOWN,
   } as KeyCodeToDirectionType;
 
-  const handleKeyPress = ({ code }: KeyboardEvent) => {
+  const handleKeyPress = async ({ code }: KeyboardEvent) => {
     if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
       setCells((prevState) => ([...moveCells(prevState, useKeyCodeToDirection[code])]));
+      await delay(100);
+      setCells((prevState) => ([...delAndIncreaseCell(prevState)]));
     }
   };
 

@@ -13,6 +13,7 @@ const create = (x: number, y: number, value: number, id: string = Math.random().
   value,
   id,
   state: cellStates.init,
+  by: null,
 });
 
 export default create;
