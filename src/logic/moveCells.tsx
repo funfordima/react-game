@@ -1,4 +1,5 @@
 import { cellsType } from '../types';
+/* eslint @typescript-eslint/no-var-requires: "off" */
 const rotateMatrix = require('matrix-rotate');
 
 const directions = {
@@ -8,26 +9,27 @@ const directions = {
   RIGHT: 'RIGHT',
 };
 
-type matrix = Array<number | string>;
+type ArrayType = Array<cellsType | number>;
+type MatrixType = ArrayType[];
 
-function printMatrix(matrix: matrix[]): void {
-  let printString = '[\n';
+// function printMatrix(matrix: MatrixType): void {
+//   let printString = '[\n';
 
-  Array.from(new Array(4), (x, i) => i)
-    .forEach((colNum) => {
-      printString += ' ';
-      printString += Array.from(new Array(4), (x, i) => i)
-        .map((rowNum) => JSON.stringify(matrix[colNum][rowNum])
-          .padStart(25, ' '))
-        .join(', ');
-      printString += ',\n';
-    });
+//   Array.from(new Array(4), (x, i) => i)
+//     .forEach((colNum) => {
+//       printString += ' ';
+//       printString += Array.from(new Array(4), (x, i) => i)
+//         .map((rowNum) => JSON.stringify(matrix[colNum][rowNum])
+//           .padStart(25, ' '))
+//         .join(', ');
+//       printString += ',\n';
+//     });
 
-  printString += ']';
-  console.log(printString);
-}
+//   printString += ']';
+//   console.log(printString);
+// }
 
-const rotateMatrixFromDirection = (matrix: matrix[], direction: string): void => {
+const rotateMatrixFromDirection = (matrix: MatrixType, direction: string): void => {
   switch (direction) {
     case directions.LEFT: {
       rotateMatrix(matrix);
@@ -48,7 +50,7 @@ const rotateMatrixFromDirection = (matrix: matrix[], direction: string): void =>
   }
 };
 
-const rotateMatrixToDirection = (matrix: matrix[], direction: string): void => {
+const rotateMatrixToDirection = (matrix: MatrixType, direction: string): void => {
   switch (direction) {
     case directions.LEFT: {
       rotateMatrix(matrix);
@@ -69,7 +71,8 @@ const rotateMatrixToDirection = (matrix: matrix[], direction: string): void => {
   }
 };
 
-const moveCell = (matrix: matrix[], x: number, y: number): void => {
+/* eslint no-param-reassign: ["error", { "props": false }] */
+const moveCell = (matrix: MatrixType, x: number, y: number): void => {
   let nextRow = y - 1;
   let currentRow = y;
 
@@ -86,19 +89,22 @@ const moveCell = (matrix: matrix[], x: number, y: number): void => {
 };
 
 const moveCells = (initCells: Array<cellsType>, direction: string): Array<cellsType> => {
+  const cells = initCells.map((cell) => JSON.parse(JSON.stringify(cell)));
+
   const matrix = Array.from(new Array(4), () =>
     Array.from(new Array(4), () => 0));
 
-  initCells.forEach((cell) => matrix[cell.y][cell.x] = cell);
-  printMatrix(matrix);
+  /* eslint no-return-assign: "error" */
+  cells.forEach((cell: cellsType) => ((matrix[cell.y][cell.x] as unknown as cellsType) = cell));
+  // printMatrix(matrix);
 
   rotateMatrixFromDirection(matrix, direction);
 
   for (let y = 0; y < 4; y += 1) {
     for (let x = 0; x < 4; x += 1) {
-      if (matrix[y][x] === 0) continue;
-
-      moveCell(matrix, x, y);
+      if (matrix[y][x] !== 0) {
+        moveCell(matrix, x, y);
+      }
     }
   }
 
@@ -106,16 +112,16 @@ const moveCells = (initCells: Array<cellsType>, direction: string): Array<cellsT
 
   for (let y = 0; y < 4; y += 1) {
     for (let x = 0; x < 4; x += 1) {
-      if (matrix[y][x] === 0) continue;
-
-      matrix[y][x].y = y;
-      matrix[y][x].x = x;
+      if (matrix[y][x] !== 0 && typeof matrix[y][x] === 'object') {
+        (matrix[y][x] as unknown as cellsType).y = y;
+        (matrix[y][x] as unknown as cellsType).x = x;
+      }
     }
   }
 
-  printMatrix(matrix);
+  // printMatrix(matrix);
 
-  return initCells;
+  return cells;
 };
 
 export { moveCells, directions };
