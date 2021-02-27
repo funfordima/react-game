@@ -3,7 +3,7 @@ import { cellsType } from '../types';
 
 const getRandomCoords = (): number => Math.floor(Math.random() * 3.9);
 
-const initCells = (): Array<cellsType> => {
+const initCells = (): cellsType[] => {
   const cell1 = create(getRandomCoords(), getRandomCoords(), 2);
   const cell2 = create(getRandomCoords(), getRandomCoords(), 2);
 

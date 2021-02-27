@@ -6,7 +6,7 @@ import Field from './UI/Field';
 import Score from './UI/Score';
 import Button from './UI/Button';
 import ControlPanel from './UI/ControlPanel';
-import initCells from './logic';
+import { moveCells, directions, initCells } from './logic';
 import './App.css';
 
 const App: React.FC = () => {
@@ -18,8 +18,21 @@ const App: React.FC = () => {
     setScore(0);
   };
 
-  const handleKeyPress = (event: KeyboardEvent) => {
-    console.log(event.code);
+  interface KeyCodeToDirectionType {
+    [key: string]: string,
+  }
+
+  const useKeyCodeToDirection = {
+    KeyA: directions.LEFT,
+    KeyD: directions.RIGHT,
+    KeyW: directions.UP,
+    KeyS: directions.DOWN,
+  } as KeyCodeToDirectionType;
+
+  const handleKeyPress = ({ code }: KeyboardEvent) => {
+    if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
+      setCells((prevState) => ([...moveCells(prevState, useKeyCodeToDirection[code])]));
+    }
   };
 
   useEffect(() => {
