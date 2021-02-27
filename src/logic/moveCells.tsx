@@ -1,6 +1,7 @@
 import { cellsType } from '../types';
 /* eslint @typescript-eslint/no-var-requires: "off" */
 const rotateMatrix = require('matrix-rotate');
+import { cellStates } from './cellManager';
 
 const directions = {
   UP: 'UP',
@@ -78,6 +79,14 @@ const moveCell = (matrix: MatrixType, x: number, y: number): void => {
 
   while (nextRow >= 0) {
     if (matrix[nextRow][x] === 0) {
+      matrix[nextRow][x] = matrix[currentRow][x];
+      (matrix[currentRow][x] as cellsType).state = cellStates.move;
+      matrix[currentRow][x] = 0;
+
+      currentRow = nextRow;
+    } else if ((matrix[nextRow][x] as cellsType).value === (matrix[currentRow][x] as cellsType).value) {
+      (matrix[nextRow][x] as cellsType).state = cellStates.del;
+      (matrix[currentRow][x] as cellsType).state = cellStates.increase;
       matrix[nextRow][x] = matrix[currentRow][x];
       matrix[currentRow][x] = 0;
 
