@@ -67,7 +67,9 @@ const moveCell = (matrix: MatrixType, x: number, y: number): void => {
       matrix[currentRow][x] = 0;
 
       currentRow = nextRow;
-    } else if ((matrix[nextRow][x] as cellsType).value === (matrix[currentRow][x] as cellsType).value) {
+    } else if ((matrix[nextRow][x] as cellsType).value === (matrix[currentRow][x] as cellsType).value &&
+      ((matrix[nextRow][x] as cellsType).state === cellStates.init ||
+        (matrix[nextRow][x] as cellsType).state === cellStates.move)) {
       (matrix[nextRow][x] as cellsType).state = cellStates.del;
       (matrix[nextRow][x] as cellsType).by = matrix[currentRow][x] as cellsType;
       (matrix[currentRow][x] as cellsType).state = cellStates.increase;

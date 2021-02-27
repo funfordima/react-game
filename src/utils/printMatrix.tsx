@@ -3,7 +3,7 @@ import { cellsType } from '../types';
 type ArrayType = Array<cellsType | number>;
 type MatrixType = ArrayType[];
 
-export default function printMatrix(matrix: MatrixType): void {
+export default function printMatrix(matrix: MatrixType): string {
   let printString = '[\n';
 
   Array.from(new Array(4), (x, i) => i)
@@ -17,5 +17,6 @@ export default function printMatrix(matrix: MatrixType): void {
     });
 
   printString += ']';
-  console.log(printString);
+
+  return printString;
 }

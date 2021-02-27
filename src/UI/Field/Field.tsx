@@ -47,7 +47,7 @@ const BackgroundCell = styled.div`
   background-color: rgba(238, 228, 218, 0.35);
 `;
 
-const Cell = styled(BackgroundCell) <{ x: number, y: number, value: number }>`
+const Cell = styled(BackgroundCell) <{ x: number, y: number, value: number, state: string }>`
   transform: translate(${({ x }) => x * 110}px, ${({ y }) => y * 110}px);
   text-align: center;
   line-height: 100px;
@@ -63,6 +63,10 @@ const Cell = styled(BackgroundCell) <{ x: number, y: number, value: number }>`
       : value < 1000 ? 47
         : value < 10000 ? 40
           : 30}px;
+  z-index: ${({ state }) =>
+    state === 'init' ? 1
+      : state === 'del' ? 0
+        : state === 'move' ? 2 : 3};
 `;
 
 interface FieldProps {
@@ -83,8 +87,8 @@ const Field: React.FC<FieldProps> = ({ cells }) => {
               )}
         </Background>
         <Playground>
-          {cells.map(({ x, y, value, id }) => (
-            <Cell key={id} x={x} y={y} value={value + inc}>
+          {cells.map(({ x, y, value, id, state }) => (
+            <Cell key={id} x={x} y={y} value={value + inc} state={state}>
               {value}
             </Cell>
           ))}
