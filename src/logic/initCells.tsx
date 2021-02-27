@@ -1,7 +1,6 @@
 import create from './cellManager';
 import { cellsType } from '../types';
-
-const getRandomCoords = (): number => Math.floor(Math.random() * 3.9);
+import getRandomCoords from '../utils';
 
 const initCells = (): cellsType[] => {
   const cell1 = create(getRandomCoords(), getRandomCoords(), 2);

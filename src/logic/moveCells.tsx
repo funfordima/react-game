@@ -13,23 +13,6 @@ const directions = {
 type ArrayType = Array<cellsType | number>;
 type MatrixType = ArrayType[];
 
-// function printMatrix(matrix: MatrixType): void {
-//   let printString = '[\n';
-
-//   Array.from(new Array(4), (x, i) => i)
-//     .forEach((colNum) => {
-//       printString += ' ';
-//       printString += Array.from(new Array(4), (x, i) => i)
-//         .map((rowNum) => JSON.stringify(matrix[colNum][rowNum])
-//           .padStart(25, ' '))
-//         .join(', ');
-//       printString += ',\n';
-//     });
-
-//   printString += ']';
-//   console.log(printString);
-// }
-
 const rotateMatrixFromDirection = (matrix: MatrixType, direction: string): void => {
   switch (direction) {
     case directions.LEFT: {
@@ -92,6 +75,8 @@ const moveCell = (matrix: MatrixType, x: number, y: number): void => {
       matrix[currentRow][x] = 0;
 
       currentRow = nextRow;
+    } else {
+      break;
     }
 
     nextRow -= 1;

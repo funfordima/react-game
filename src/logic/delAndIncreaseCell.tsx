@@ -7,7 +7,7 @@ const delAndIncreaseCell = (cells: cellsType[]): cellsType[] => {
   /* eslint no-param-reassign: ["error", { "props": false }] */
   return filterCells.map((cell) => {
     if (cell.state === cellStates.increase) {
-      cell.value += 2;
+      cell.value *= 2;
     }
 
     cell.state = cellStates.init;
