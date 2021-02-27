@@ -9,8 +9,6 @@ import ControlPanel from './UI/ControlPanel';
 import { moveCells, directions, initCells, delAndIncreaseCell, addCell } from './logic';
 import './App.css';
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 const App: React.FC = () => {
   const [cells, setCells] = useState(initCells());
   const [score, setScore] = useState(0);
@@ -33,10 +31,12 @@ const App: React.FC = () => {
 
   const handleKeyPress = async ({ code }: KeyboardEvent) => {
     if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
-      setCells((prevState) => ([...moveCells(prevState, useKeyCodeToDirection[code])]));
-      await delay(100);
-      setCells((prevState) => ([...delAndIncreaseCell(prevState)]));
-      setCells((prevState) => ([...addCell(prevState)]));
+      setCells((prevState) => {
+        const cellsWithMoving = [...moveCells(prevState, useKeyCodeToDirection[code])];
+        // await delay(100);
+        const newCells = [...delAndIncreaseCell(cellsWithMoving)];
+        return [...addCell(newCells)];
+      })
     }
   };
 
