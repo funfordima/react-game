@@ -1,4 +1,5 @@
 import { cellsType } from '../types';
+const rotateMatrix = require('matrix-rotate');
 
 const directions = {
   UP: 'UP',
@@ -26,6 +27,48 @@ function printMatrix(matrix: matrix[]): void {
   console.log(printString);
 }
 
+const rotateMatrixFromDirection = (matrix: matrix[], direction: string): void => {
+  switch (direction) {
+    case directions.LEFT: {
+      rotateMatrix(matrix);
+      break;
+    }
+    case directions.DOWN: {
+      rotateMatrix(matrix);
+      rotateMatrix(matrix);
+      break;
+    }
+    case directions.RIGHT: {
+      rotateMatrix(matrix);
+      rotateMatrix(matrix);
+      rotateMatrix(matrix);
+      break;
+    }
+    default: break;
+  }
+};
+
+const rotateMatrixToDirection = (matrix: matrix[], direction: string): void => {
+  switch (direction) {
+    case directions.LEFT: {
+      rotateMatrix(matrix);
+      rotateMatrix(matrix);
+      rotateMatrix(matrix);
+      break;
+    }
+    case directions.DOWN: {
+      rotateMatrix(matrix);
+      rotateMatrix(matrix);
+      break;
+    }
+    case directions.RIGHT: {
+      rotateMatrix(matrix);
+      break;
+    }
+    default: break;
+  }
+};
+
 const moveCell = (matrix: matrix[], x: number, y: number): void => {
   let nextRow = y - 1;
   let currentRow = y;
@@ -49,6 +92,8 @@ const moveCells = (initCells: Array<cellsType>, direction: string): Array<cellsT
   initCells.forEach((cell) => matrix[cell.y][cell.x] = cell);
   printMatrix(matrix);
 
+  rotateMatrixFromDirection(matrix, direction);
+
   for (let y = 0; y < 4; y += 1) {
     for (let x = 0; x < 4; x += 1) {
       if (matrix[y][x] === 0) continue;
@@ -56,6 +101,8 @@ const moveCells = (initCells: Array<cellsType>, direction: string): Array<cellsT
       moveCell(matrix, x, y);
     }
   }
+
+  rotateMatrixToDirection(matrix, direction);
 
   for (let y = 0; y < 4; y += 1) {
     for (let x = 0; x < 4; x += 1) {

@@ -1,21 +1,31 @@
 import create from '../cellManager';
 import { moveCells, directions } from '../moveCells';
+import { cellsType } from '../../types';
 
-describe('moving UP', () => {
-  it('move on 3 steps', () => {
-    const initCells = [create(1, 3, 2, 'test')];
+const finalPosition = {
+  [directions.UP]: [{ x: 1, y: 0, value: 2, id: 'id_1' }, { x: 0, y: 0, value: 4, id: 'id_2' }] as cellsType[],
+  [directions.DOWN]: [{ x: 1, y: 3, value: 2, id: 'id_1' }, { x: 0, y: 3, value: 4, id: 'id_2' }] as cellsType[],
+  [directions.RIGHT]: [{ x: 3, y: 1, value: 2, id: 'id_1' }, { x: 3, y: 2, value: 4, id: 'id_2' }] as cellsType[],
+  [directions.LEFT]: [{ x: 0, y: 1, value: 2, id: 'id_1' }, { x: 0, y: 2, value: 4, id: 'id_2' }] as cellsType[],
+};
 
-    expect(moveCells(initCells, directions.UP)).toEqual([
-      { x: 1, y: 0, value: 2, id: 'test' }
-    ]);
-  });
+Object.keys(directions).forEach((direct) => {
+  describe(`moving ${direct}`, () => {
+    it('move on 3 steps', () => {
+      const initCells = [create(1, 1, 2, 'id_1')];
 
-  it('move 2 cells', () => {
-    const initCells = [create(1, 3, 2, 'test'), create(2, 3, 4, 'test1')];
+      expect(moveCells(initCells, direct)).toEqual([
+        finalPosition[direct][0],
+      ]);
+    });
 
-    expect(moveCells(initCells, directions.UP)).toEqual([
-      { x: 1, y: 0, value: 2, id: 'test' },
-      { x: 2, y: 0, value: 4, id: 'test1' },
-    ]);
+    it('move 2 cells', () => {
+      const initCells = [create(1, 1, 2, 'id_1'), create(0, 2, 4, 'id_2')];
+
+      expect(moveCells(initCells, direct)).toEqual([
+        finalPosition[direct][0],
+        finalPosition[direct][1],
+      ]);
+    });
   });
 });
