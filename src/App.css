@@ -3,3 +3,13 @@
   margin: 0;
   padding: 0;
 }
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #faf8ef;
+  color: #776e65;
+  font-family: clear sans, helvetica neue, Arial, sans-serif;
+  font-size: 18px;
+}
