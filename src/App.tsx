@@ -3,17 +3,36 @@ import React, { useState, useEffect } from 'react';
 // import { cellsType } from './types';
 import Layout from './UI/Layout';
 import Field from './UI/Field';
-import Score from './UI/Score';
+import ScoreContainer from './UI/Score';
 import Button from './UI/Button';
 import ControlPanel from './UI/ControlPanel';
 import { moveCells, directions, initCells, delAndIncreaseCell, addCell } from './logic';
+import Heading from './UI/Heading';
+import Title from './UI/Title';
+import ScoreWrapper from './UI/Score/ScoreWrapper';
+import GameIntro from './UI/GameIntro';
+import GameExplanation from './UI/GameExplanation';
 import './App.css';
 
+interface KeyCodeToDirectionType {
+  [key: string]: string,
+}
+
 const App: React.FC = () => {
+  const getBestScore = (): number => {
+    let bestScore = 0;
+
+    if (localStorage.getItem('bestScore')) {
+      bestScore = Number(localStorage.getItem('bestScore'));
+    }
+
+    return bestScore;
+  };
   const [cells, setCells] = useState({
     cells: initCells(),
     score: 0,
   });
+  const [bestScore, setBestScore] = useState(getBestScore());
 
   const handleClickBtnNewGame = () => {
     setCells({
@@ -21,10 +40,6 @@ const App: React.FC = () => {
       score: 0,
     });
   };
-
-  interface KeyCodeToDirectionType {
-    [key: string]: string,
-  }
 
   const useKeyCodeToDirection = {
     KeyA: directions.LEFT,
@@ -53,17 +68,34 @@ const App: React.FC = () => {
     return () => document.removeEventListener('keydown', handleKeyPress);
   });
 
+  useEffect(() => {
+    if (cells.score > bestScore) {
+      setBestScore(cells.score);
+      localStorage.setItem('bestScore', `${cells.score}`);
+    }
+  }, [cells.score, bestScore]);
+
   return (
     <Layout>
+      <Heading>
+        <Title text='2048' />
+        <ScoreWrapper>
+          <ScoreContainer text='score'>
+            {cells.score}
+          </ScoreContainer>
+          <ScoreContainer text='best'>
+            {bestScore}
+          </ScoreContainer>
+        </ScoreWrapper>
+      </Heading>
       <ControlPanel>
+        <GameIntro />
         <Button onClick={handleClickBtnNewGame}>
           New Game
         </Button>
-        <Score>
-          {cells.score}
-        </Score>
       </ControlPanel>
       <Field cells={cells.cells} />
+      <GameExplanation />
     </Layout>
   );
 };
