@@ -3,4 +3,6 @@ export type cellsType = {
   y: number,
   value: number,
   id: string,
+  state: string,
+  by: cellsType | null,
 }
