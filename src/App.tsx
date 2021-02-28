@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import styled from 'styled-components';
-// import { cellsType } from './types';
+import { cellsType } from './types';
 import Layout from './UI/Layout';
 import Field from './UI/Field';
 import ScoreContainer from './UI/Score';
@@ -18,8 +18,13 @@ interface KeyCodeToDirectionType {
   [key: string]: string,
 }
 
+interface MainState {
+  cells: cellsType[],
+  score: number,
+}
+
 const App: React.FC = () => {
-  const getBestScore = (): number => {
+  const initBestScore = (): number => {
     let bestScore = 0;
 
     if (localStorage.getItem('bestScore')) {
@@ -28,11 +33,20 @@ const App: React.FC = () => {
 
     return bestScore;
   };
-  const [cells, setCells] = useState({
-    cells: initCells(),
-    score: 0,
-  });
-  const [bestScore, setBestScore] = useState(getBestScore());
+
+  const initMainState = (): MainState => {
+    if (localStorage.getItem('mainState')) {
+      return JSON.parse(String(localStorage.getItem('mainState')));
+    }
+
+    return {
+      cells: initCells(),
+      score: 0,
+    }
+  };
+
+  const [mainState, setCells] = useState(initMainState());
+  const [bestScore, setBestScore] = useState(initBestScore());
 
   const handleClickBtnNewGame = () => {
     setCells({
@@ -54,10 +68,13 @@ const App: React.FC = () => {
         const cellsWithMoving = [...moveCells(prevState.cells, useKeyCodeToDirection[code])];
         // await delay(100);
         const { newCells, score } = delAndIncreaseCell(cellsWithMoving, prevState.score);
-        return {
+        const newState = {
           cells: [...addCell([...newCells])],
           score,
         };
+        localStorage.setItem('mainState', JSON.stringify(newState));
+
+        return newState;
       })
     }
   };
@@ -69,11 +86,11 @@ const App: React.FC = () => {
   });
 
   useEffect(() => {
-    if (cells.score > bestScore) {
-      setBestScore(cells.score);
-      localStorage.setItem('bestScore', `${cells.score}`);
+    if (mainState.score > bestScore) {
+      setBestScore(mainState.score);
+      localStorage.setItem('bestScore', `${mainState.score}`);
     }
-  }, [cells.score, bestScore]);
+  }, [mainState.score, bestScore]);
 
   return (
     <Layout>
@@ -81,7 +98,7 @@ const App: React.FC = () => {
         <Title text='2048' />
         <ScoreWrapper>
           <ScoreContainer text='score'>
-            {cells.score}
+            {mainState.score}
           </ScoreContainer>
           <ScoreContainer text='best'>
             {bestScore}
@@ -94,7 +111,7 @@ const App: React.FC = () => {
           New Game
         </Button>
       </ControlPanel>
-      <Field cells={cells.cells} />
+      <Field cells={mainState.cells} />
       <GameExplanation />
     </Layout>
   );
