@@ -10,12 +10,16 @@ import { moveCells, directions, initCells, delAndIncreaseCell, addCell } from '.
 import './App.css';
 
 const App: React.FC = () => {
-  const [cells, setCells] = useState(initCells());
-  const [score, setScore] = useState(0);
+  const [cells, setCells] = useState({
+    cells: initCells(),
+    score: 0,
+  });
 
   const handleClickBtnNewGame = () => {
-    setCells(initCells());
-    setScore(0);
+    setCells({
+      cells: initCells(),
+      score: 0,
+    });
   };
 
   interface KeyCodeToDirectionType {
@@ -32,10 +36,13 @@ const App: React.FC = () => {
   const handleKeyPress = async ({ code }: KeyboardEvent) => {
     if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
       setCells((prevState) => {
-        const cellsWithMoving = [...moveCells(prevState, useKeyCodeToDirection[code])];
+        const cellsWithMoving = [...moveCells(prevState.cells, useKeyCodeToDirection[code])];
         // await delay(100);
-        const newCells = [...delAndIncreaseCell(cellsWithMoving)];
-        return [...addCell(newCells)];
+        const { newCells, score } = delAndIncreaseCell(cellsWithMoving, prevState.score);
+        return {
+          cells: [...addCell([...newCells])],
+          score,
+        };
       })
     }
   };
@@ -53,10 +60,10 @@ const App: React.FC = () => {
           New Game
         </Button>
         <Score>
-          {score}
+          {cells.score}
         </Score>
       </ControlPanel>
-      <Field cells={cells} />
+      <Field cells={cells.cells} />
     </Layout>
   );
 };
