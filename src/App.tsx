@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import useSound from 'use-sound';
 import { Transition } from 'react-transition-group';
 import { cellsType } from './types';
 import Layout from './UI/Layout';
@@ -59,6 +60,12 @@ const App: React.FC = () => {
   const [score, setScore] = useState(initScore('mainScore'));
   const [isShowMess, setIsShowMess] = useState(false);
   const nodeRef = useRef(null);
+  const audioHideRef = useRef(new Audio('/hide.mp3'));
+  const soundUrl = '/move.mp3';
+  const [play, { stop }] = useSound(
+    soundUrl,
+    { volume: 0.5 }
+  );
 
   const handleClickBtnNewGame = () => {
     localStorage.removeItem('mainState');
@@ -78,15 +85,23 @@ const App: React.FC = () => {
   } as KeyCodeToDirectionType;
 
   const processGame = async () => {
-    setCells(state => ({
-      ...state,
-      cells: [...moveCells(state.cells, state.moveDirection)],
-    }));
+    setCells(state => {
+      // new Audio('/hide_1.mp3').play();
+      // setIsHovering(true);
+      play();
+      return {
+        ...state,
+        cells: [...moveCells(state.cells, state.moveDirection)],
+      }
+    });
 
     await delay(150);
 
+    // setIsHovering(false);
+    stop();
+
     setCells(state => {
-      const { cells } = delAndIncreaseCell(state.cells, setScore);
+      const { cells } = delAndIncreaseCell(state.cells, setScore, audioHideRef.current);
       return ({
         ...state,
         cells,

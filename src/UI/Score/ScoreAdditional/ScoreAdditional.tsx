@@ -1,4 +1,3 @@
-// import React from 'react';
 import styled from 'styled-components';
 
 const ScoreAdd = styled.div`
@@ -26,13 +25,5 @@ const ScoreAdd = styled.div`
     }
   }
 `;
-
-// interface ScoreAdditionalProps {
-//   className: string;
-// }
-
-// const ScoreAdditional: React.FC<ScoreAdditionalProps> = ({ className }) => (
-//   <ScoreAdd className={className} />
-// );
 
 export default ScoreAdd;
