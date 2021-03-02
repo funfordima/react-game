@@ -3,17 +3,15 @@ import { cellsType } from '../types';
 
 type DelAndIncreaseCellType = {
   cells: cellsType[],
-  score: number,
 }
 
-const delAndIncreaseCell = (cellsParam: cellsType[], initialScore: number): DelAndIncreaseCellType => {
+const delAndIncreaseCell = (cellsParam: cellsType[], setScore: React.Dispatch<React.SetStateAction<number>>): DelAndIncreaseCellType => {
   const filterCells = cellsParam.filter((cell) => cell.state !== cellStates.del);
-  let score = initialScore;
 
   /* eslint no-param-reassign: ["error", { "props": false }] */
   const cells = filterCells.map((cell) => {
     if (cell.state === cellStates.increase) {
-      score += cell.value;
+      setScore((score) => (score + cell.value));
       cell.value *= 2;
     }
 
@@ -22,7 +20,7 @@ const delAndIncreaseCell = (cellsParam: cellsType[], initialScore: number): DelA
     return cell;
   })
 
-  return { cells, score };
+  return { cells };
 };
 
 export default delAndIncreaseCell;

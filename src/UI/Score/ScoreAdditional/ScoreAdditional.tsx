@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import styled from 'styled-components';
 
 const ScoreAdd = styled.div`
@@ -11,7 +11,7 @@ const ScoreAdd = styled.div`
   font-weight: 700;
   color: rgba(119, 110, 101, .9);
   z-index: 10;
-  animation: move-up 200ms ease-in;
+  animation: move-up 300ms ease-in;
   animation-fill-mode: both;
 
   @keyframes move-up {
@@ -27,15 +27,12 @@ const ScoreAdd = styled.div`
   }
 `;
 
-interface ScoreAdditionalProps {
-  children: React.ReactNode;
-  className: string;
-}
+// interface ScoreAdditionalProps {
+//   className: string;
+// }
 
-const ScoreAdditional: React.FC<ScoreAdditionalProps> = ({ children, className }) => (
-  <ScoreAdd className={className}>
-    {children}
-  </ScoreAdd>
-);
+// const ScoreAdditional: React.FC<ScoreAdditionalProps> = ({ className }) => (
+//   <ScoreAdd className={className} />
+// );
 
-export default ScoreAdditional;
+export default ScoreAdd;

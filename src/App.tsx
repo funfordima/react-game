@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Transition } from 'react-transition-group';
 import { cellsType } from './types';
 import Layout from './UI/Layout';
@@ -12,8 +12,8 @@ import Title from './UI/Title';
 import ScoreWrapper from './UI/Score/ScoreWrapper';
 import GameIntro from './UI/GameIntro';
 import GameExplanation from './UI/GameExplanation';
-import ScoreAdditional from './UI/Score/ScoreAdditional';
-// import { delay } from './utils';
+import ScoreAdd from './UI/Score/ScoreAdditional';
+import { delay } from './utils';
 import './App.css';
 
 interface KeyCodeToDirectionType {
@@ -22,18 +22,24 @@ interface KeyCodeToDirectionType {
 
 interface MainState {
   cells: cellsType[],
-  score: number,
+  gameState: string,
+  moveDirection: string,
+}
+
+const gameStates = {
+  IDLE: 'IDLE',
+  PROCESSING: 'PROCESSING',
 }
 
 const App: React.FC = () => {
-  const initBestScore = (): number => {
-    let bestScore = 0;
+  const initScore = (type: string): number => {
+    let score = 0;
 
-    if (localStorage.getItem('bestScore')) {
-      bestScore = Number(localStorage.getItem('bestScore'));
+    if (localStorage.getItem(type)) {
+      score = Number(localStorage.getItem(type));
     }
 
-    return bestScore;
+    return score;
   };
 
   const initMainState = (): MainState => {
@@ -43,19 +49,24 @@ const App: React.FC = () => {
 
     return {
       cells: initCells(),
-      score: 0,
+      gameState: gameStates.IDLE,
+      moveDirection: '',
     }
   };
 
   const [mainState, setCells] = useState(initMainState());
-  const [bestScore, setBestScore] = useState(initBestScore());
+  const [bestScore, setBestScore] = useState(initScore('bestScore'));
+  const [score, setScore] = useState(initScore('mainScore'));
   const [isShowMess, setIsShowMess] = useState(false);
+  const nodeRef = useRef(null);
 
   const handleClickBtnNewGame = () => {
     localStorage.removeItem('mainState');
+    setScore(0);
     setCells({
       cells: initCells(),
-      score: 0,
+      gameState: gameStates.IDLE,
+      moveDirection: '',
     });
   };
 
@@ -66,54 +77,65 @@ const App: React.FC = () => {
     KeyS: directions.DOWN,
   } as KeyCodeToDirectionType;
 
+  const processGame = async () => {
+    setCells(state => ({
+      ...state,
+      cells: [...moveCells(state.cells, state.moveDirection)],
+    }));
+
+    await delay(150);
+
+    setCells(state => {
+      const { cells } = delAndIncreaseCell(state.cells, setScore);
+      return ({
+        ...state,
+        cells,
+      })
+    });
+
+    setCells(state => ({
+      ...state,
+      cells: [...addCell([...state.cells])],
+    }));
+
+    setCells(state => {
+      const newState = {
+        ...state,
+        gameState: gameStates.IDLE,
+        moveDirection: '',
+      };
+      localStorage.setItem('mainState', JSON.stringify(newState));
+      localStorage.setItem('mainScore', JSON.stringify(score));
+
+      return newState;
+    });
+  };
+
   const handleKeyPress = async ({ code }: KeyboardEvent) => {
     if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
-      setCells((prevState) => {
-        const cellsWithMoving = [...moveCells(prevState.cells, useKeyCodeToDirection[code])];
-        // await delay(100);
-        const { cells, score } = delAndIncreaseCell(cellsWithMoving, prevState.score);
-        const newState = {
-          cells: [...addCell([...cells])],
-          score,
-        };
-        localStorage.setItem('mainState', JSON.stringify(newState));
-
-        return newState;
-      })
-
-      // setCells(state => ({
-      //   ...state,
-      //   cells: moveCells(state.cells, useKeyCodeToDirection[code]),
-      // }));
-
-      // await delay(150);
-
-      // setCells(prevState => {
-      //   const newState = delAndIncreaseCell(prevState.cells, prevState.score);
-      //   console.log(newState.score);
-      //   // localStorage.setItem();
-
-      //   const nState = {
-      //     score: newState.score,
-      //     cells: addCell(newState.cells),
-      //   };
-
-      //   localStorage.setItem('mainState', JSON.stringify(nState));
-
-      //   return nState;
-      // });
-
-      // await delay(150);
-
-      // setCells(state => {
-      //   console.log(state);
+      // setCells((prevState) => {
+      //   const cellsWithMoving = [...moveCells(prevState.cells, useKeyCodeToDirection[code])];
+      //   // await delay(100);
+      //   const { cells, score } = delAndIncreaseCell(cellsWithMoving, prevState.score);
       //   const newState = {
-      //     ...state,
-      //     cells: addCell(state.cells),
+      //     cells: [...addCell([...cells])],
+      //     score,
       //   };
       //   localStorage.setItem('mainState', JSON.stringify(newState));
+
       //   return newState;
-      // });
+      // })
+
+      setCells(state => {
+        if (state.gameState === gameStates.IDLE) {
+          return {
+            ...state,
+            gameState: gameStates.PROCESSING,
+            moveDirection: (useKeyCodeToDirection as KeyCodeToDirectionType)[code],
+          }
+        }
+        return state
+      });
     }
   };
 
@@ -124,19 +146,26 @@ const App: React.FC = () => {
   });
 
   useEffect(() => {
-    if (mainState.score > bestScore) {
-      setBestScore(mainState.score);
-      localStorage.setItem('bestScore', `${mainState.score}`);
+    if (score > bestScore) {
+      setBestScore(score);
+      localStorage.setItem('bestScore', `${score}`);
     }
-  }, [mainState.score, bestScore]);
+  }, [score, bestScore]);
 
   useEffect(() => {
     setIsShowMess(true);
-  }, [mainState.score]);
+  }, [score]);
 
   // useEffect(() => {
   //   setIsShowMess(false);
   // }, [isShow]);
+
+  useEffect(() => {
+    if (mainState.gameState === gameStates.PROCESSING) {
+      processGame();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mainState.gameState]);
 
   return (
     <Layout>
@@ -144,14 +173,15 @@ const App: React.FC = () => {
         <Title text='2048' />
         <ScoreWrapper>
           <ScoreContainer text='score'>
-            {mainState.score}
+            {score}
             <Transition
+              nodeRef={nodeRef}
               in={isShowMess}
               timeout={200}
               unmountOnExit
               onEntered={() => setIsShowMess(false)}
             >
-              {state => <ScoreAdditional className={`alert ${state}`}>{mainState.score}</ScoreAdditional>}
+              {state => <ScoreAdd ref={nodeRef} className={`alert ${state}`}>{score}</ScoreAdd>}
             </Transition>
           </ScoreContainer>
           <ScoreContainer text='best'>
