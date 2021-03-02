@@ -34,6 +34,10 @@ interface ScoreContainerProps {
   children: React.ReactNode;
 }
 
-const ScoreContainer: React.FC<ScoreContainerProps> = ({ text, children }) => (<Score text={text}> {children} </Score>);
+const ScoreContainer: React.FC<ScoreContainerProps> = ({ text, children }) => (
+  <Score text={text}>
+    {children}
+  </Score>
+);
 
 export default ScoreContainer;

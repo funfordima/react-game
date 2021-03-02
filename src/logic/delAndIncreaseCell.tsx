@@ -2,16 +2,16 @@ import { cellStates } from './cellManager';
 import { cellsType } from '../types';
 
 type DelAndIncreaseCellType = {
-  newCells: cellsType[],
+  cells: cellsType[],
   score: number,
 }
 
-const delAndIncreaseCell = (cells: cellsType[], initialScore: number): DelAndIncreaseCellType => {
-  const filterCells = cells.filter((cell) => cell.state !== cellStates.del);
+const delAndIncreaseCell = (cellsParam: cellsType[], initialScore: number): DelAndIncreaseCellType => {
+  const filterCells = cellsParam.filter((cell) => cell.state !== cellStates.del);
   let score = initialScore;
 
   /* eslint no-param-reassign: ["error", { "props": false }] */
-  const newCells = filterCells.map((cell) => {
+  const cells = filterCells.map((cell) => {
     if (cell.state === cellStates.increase) {
       score += cell.value;
       cell.value *= 2;
@@ -22,7 +22,7 @@ const delAndIncreaseCell = (cells: cellsType[], initialScore: number): DelAndInc
     return cell;
   })
 
-  return { newCells, score };
+  return { cells, score };
 };
 
 export default delAndIncreaseCell;

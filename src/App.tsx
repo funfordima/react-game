@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import styled from 'styled-components';
+import { Transition } from 'react-transition-group';
 import { cellsType } from './types';
 import Layout from './UI/Layout';
 import Field from './UI/Field';
@@ -12,6 +12,8 @@ import Title from './UI/Title';
 import ScoreWrapper from './UI/Score/ScoreWrapper';
 import GameIntro from './UI/GameIntro';
 import GameExplanation from './UI/GameExplanation';
+import ScoreAdditional from './UI/Score/ScoreAdditional';
+// import { delay } from './utils';
 import './App.css';
 
 interface KeyCodeToDirectionType {
@@ -47,8 +49,10 @@ const App: React.FC = () => {
 
   const [mainState, setCells] = useState(initMainState());
   const [bestScore, setBestScore] = useState(initBestScore());
+  const [isShowMess, setIsShowMess] = useState(false);
 
   const handleClickBtnNewGame = () => {
+    localStorage.removeItem('mainState');
     setCells({
       cells: initCells(),
       score: 0,
@@ -67,15 +71,49 @@ const App: React.FC = () => {
       setCells((prevState) => {
         const cellsWithMoving = [...moveCells(prevState.cells, useKeyCodeToDirection[code])];
         // await delay(100);
-        const { newCells, score } = delAndIncreaseCell(cellsWithMoving, prevState.score);
+        const { cells, score } = delAndIncreaseCell(cellsWithMoving, prevState.score);
         const newState = {
-          cells: [...addCell([...newCells])],
+          cells: [...addCell([...cells])],
           score,
         };
         localStorage.setItem('mainState', JSON.stringify(newState));
 
         return newState;
       })
+
+      // setCells(state => ({
+      //   ...state,
+      //   cells: moveCells(state.cells, useKeyCodeToDirection[code]),
+      // }));
+
+      // await delay(150);
+
+      // setCells(prevState => {
+      //   const newState = delAndIncreaseCell(prevState.cells, prevState.score);
+      //   console.log(newState.score);
+      //   // localStorage.setItem();
+
+      //   const nState = {
+      //     score: newState.score,
+      //     cells: addCell(newState.cells),
+      //   };
+
+      //   localStorage.setItem('mainState', JSON.stringify(nState));
+
+      //   return nState;
+      // });
+
+      // await delay(150);
+
+      // setCells(state => {
+      //   console.log(state);
+      //   const newState = {
+      //     ...state,
+      //     cells: addCell(state.cells),
+      //   };
+      //   localStorage.setItem('mainState', JSON.stringify(newState));
+      //   return newState;
+      // });
     }
   };
 
@@ -92,6 +130,14 @@ const App: React.FC = () => {
     }
   }, [mainState.score, bestScore]);
 
+  useEffect(() => {
+    setIsShowMess(true);
+  }, [mainState.score]);
+
+  // useEffect(() => {
+  //   setIsShowMess(false);
+  // }, [isShow]);
+
   return (
     <Layout>
       <Heading>
@@ -99,6 +145,14 @@ const App: React.FC = () => {
         <ScoreWrapper>
           <ScoreContainer text='score'>
             {mainState.score}
+            <Transition
+              in={isShowMess}
+              timeout={200}
+              unmountOnExit
+              onEntered={() => setIsShowMess(false)}
+            >
+              {state => <ScoreAdditional className={`alert ${state}`}>{mainState.score}</ScoreAdditional>}
+            </Transition>
           </ScoreContainer>
           <ScoreContainer text='best'>
             {bestScore}
