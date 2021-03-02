@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const ScoreWrap = styled.div`
-  width: 200px;
+  width: 250px;
   display: flex;
   align-items: center;
   justify-content: space-between;

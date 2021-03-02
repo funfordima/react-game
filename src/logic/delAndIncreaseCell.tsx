@@ -2,18 +2,17 @@ import { cellStates } from './cellManager';
 import { cellsType } from '../types';
 
 type DelAndIncreaseCellType = {
-  newCells: cellsType[],
-  score: number,
+  cells: cellsType[],
 }
 
-const delAndIncreaseCell = (cells: cellsType[], initialScore: number): DelAndIncreaseCellType => {
-  const filterCells = cells.filter((cell) => cell.state !== cellStates.del);
-  let score = initialScore;
+const delAndIncreaseCell = (cellsParam: cellsType[], setScore: React.Dispatch<React.SetStateAction<number>>, reff: HTMLAudioElement): DelAndIncreaseCellType => {
+  const filterCells = cellsParam.filter((cell) => cell.state !== cellStates.del);
 
   /* eslint no-param-reassign: ["error", { "props": false }] */
-  const newCells = filterCells.map((cell) => {
+  const cells = filterCells.map((cell) => {
     if (cell.state === cellStates.increase) {
-      score += cell.value;
+      reff.play();
+      setScore((score) => (score + cell.value));
       cell.value *= 2;
     }
 
@@ -22,7 +21,7 @@ const delAndIncreaseCell = (cells: cellsType[], initialScore: number): DelAndInc
     return cell;
   })
 
-  return { newCells, score };
+  return { cells };
 };
 
 export default delAndIncreaseCell;

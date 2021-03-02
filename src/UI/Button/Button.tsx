@@ -13,6 +13,10 @@ const Button = styled.button`
   color: #fff;
   cursor: pointer;
   outline: none;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 export default Button;
