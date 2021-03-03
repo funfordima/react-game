@@ -46,23 +46,25 @@ const PrettoSlider = withStyles({
 
 interface MusicSliderProps {
   text: string,
+  id: string,
+  callback: (value: number) => void,
 };
 
-const MusicSlider: React.FC<MusicSliderProps> = ({ text }) => {
+const MusicSlider: React.FC<MusicSliderProps> = ({ text, id, callback }) => {
   const classes = useStyles();
-
-  const [volume, setVolume] = useState<number | number[] >(5 as number);
-  const { setMusicVolume } = useContext(MusicContext);
+  const { musicVolume } = useContext(MusicContext);
+  const [volume, setVolume] = useState<number | number[] >(musicVolume as number);
 
   const handleChange = (event: any, value: number | number[] ): void => {
     setVolume(value);  
-    setMusicVolume(Number(value));
+    callback(Number(value));
   };
 
   return (
     <div className={classes.root}>
       <Typography gutterBottom>{text}</Typography>
-      <PrettoSlider 
+      <PrettoSlider
+        id={id} 
         value={volume}
         onChange={handleChange} 
         valueLabelDisplay="auto" 

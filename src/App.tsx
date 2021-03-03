@@ -36,14 +36,17 @@ const gameStates = {
 interface MusicContextT {
   handlerToggleVolumeMusic: () => void,
   setMusicVolume: React.Dispatch<React.SetStateAction<number>>,
+  setAudioVolume: React.Dispatch<React.SetStateAction<number>>,
+  musicVolume: number,
+  audioVolume: number,
   // setPlaybackRate:  React.Dispatch<React.SetStateAction<number>>,
 }
 
 export const MusicContext = createContext({} as MusicContextT);
 
 const App: React.FC = () => {
-  const initScore = (type: string): number => {
-    let score = 0;
+  const initScore = (type: string, value = 0): number => {
+    let score = value;
 
     if (localStorage.getItem(type)) {
       score = Number(localStorage.getItem(type));
@@ -69,11 +72,12 @@ const App: React.FC = () => {
   const [score, setScore] = useState(initScore('mainScore'));
   const [isShowMess, setIsShowMess] = useState(false);
   const [isOpenMenu, setOpenMenu] = useState(false);
-  const [musicVolume, setMusicVolume] = useState(20 as number);
+  const [musicVolume, setMusicVolume] = useState(initScore('musicVolume', 20) as number);
+  const [audioVolume, setAudioVolume] = useState(initScore('audioVolume', 20) as number);
   // const [playbackRate, setPlaybackRate] = useState(0.75);
   const [musicPlay, setMusicPlay] = useState(false);
   const nodeRef = useRef(null);
-  const audioHideRef = useRef(new Audio('/hide.mp3'));
+  // const audioHideRef = useRef(new Audio('/hide.mp3'));
   const audioMoveRef = useRef(new Audio('/move.mp3'));
   const soundUrl = '/music.mp3';
   const [play, { stop, sound }] = useSound(
@@ -83,6 +87,8 @@ const App: React.FC = () => {
       volume: musicVolume / 100,
     },
   );
+
+  audioMoveRef.current.volume = audioVolume / 100;
 
   const handlerToggleVolumeMusic = (): void => {
     setMusicPlay((isMusic) => !isMusic);
@@ -99,6 +105,9 @@ const App: React.FC = () => {
   const musicController = {
     handlerToggleVolumeMusic,
     setMusicVolume,
+    setAudioVolume,
+    musicVolume,
+    audioVolume,
     // setPlaybackRate
   };
 
@@ -124,30 +133,28 @@ const App: React.FC = () => {
   } as KeyCodeToDirectionType;
 
   const processGame = async () => {
-    setCells(state => {
-      // new Audio('/hide_1.mp3').play();
-      audioMoveRef.current.play();
-      return {
+    audioMoveRef.current.play();
+    setCells(state => ({
         ...state,
         cells: [...moveCells(state.cells, state.moveDirection)],
-      }
-    });
+      })
+    );
 
     await delay(150);
 
-    audioMoveRef.current.pause();
-    audioMoveRef.current.currentTime = 0;
+    // audioMoveRef.current.pause();
+    // audioMoveRef.current.currentTime = 0;
 
     setCells(state => {
-      const { cells } = delAndIncreaseCell(state.cells, setScore, audioHideRef.current);
+      const { cells } = delAndIncreaseCell(state.cells, setScore);
       return ({
         ...state,
         cells,
       })
     });
 
-    audioHideRef.current.pause();
-    audioHideRef.current.currentTime = 0;
+    // audioHideRef.current.pause();
+    // audioHideRef.current.currentTime = 0;
 
     setCells(state => ({
       ...state,

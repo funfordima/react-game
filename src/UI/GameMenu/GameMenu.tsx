@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
 import OnOffButton from '../OnOffButton';
 import MusicSlider from '../MusicSlider';
-// import { MusicContext } from '../../App';
+import { MusicContext } from '../../App';
 
 const Overlay = styled.div`
   display: block;
@@ -128,7 +128,19 @@ interface GameMenuProps {
   closeMenu: () => void;
 }
 
-const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => (
+const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
+  const { setMusicVolume, setAudioVolume } = useContext(MusicContext);
+
+  const handleMusicVolume = (value: number): void => {
+    setMusicVolume(Number(value));
+    localStorage.setItem('musicVolume', `${value}`);
+  };
+
+  const handleAudioVolume = (value: number): void => {
+    setAudioVolume(Number(value));
+    localStorage.setItem('audioVolume', `${value}`);
+  };
+  return (
     <Overlay>
       <BookingWidgetWrapper>
         <BookingWidget>
@@ -144,11 +156,11 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => (
           </WidgetHeader>
           <ServiceContainer>
             <Span>Music</Span>
-            <MusicSlider text='music' />
+            <MusicSlider id='music' text='music' callback={handleMusicVolume}/>
           </ServiceContainer>
           <ServiceContainer>
             <Span>Sound</Span>
-            <MusicSlider text='sound' />
+            <MusicSlider id='audio' text='sound' callback={handleAudioVolume}/>
           </ServiceContainer>
           <ServiceContainer>
             <OnOffButton />
@@ -157,5 +169,6 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => (
       </BookingWidgetWrapper>
     </Overlay>
   );
+};
 
 export default GameMenu;
