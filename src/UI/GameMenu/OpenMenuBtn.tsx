@@ -21,6 +21,11 @@ const OpenMenuBtn = styled.button`
   &:hover {
     transform: scale(1.1);
   }
+
+  @media (max-width: 805px) {
+    bottom: -50px;
+    top: inherit;
+  }
 `;
 
 export default OpenMenuBtn;

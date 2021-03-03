@@ -8,6 +8,10 @@ const Main = styled.main`
   align-items: center;
   justify-content: center;
   position: relative;
+
+  @media (max-width: 805px) {
+    padding: 5px;
+  }
 `;
 
 const Content = styled.div`

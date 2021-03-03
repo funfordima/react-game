@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-// import { MusicContext } from '../../App';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,7 +52,6 @@ interface MusicSliderProps {
 
 const MusicSlider: React.FC<MusicSliderProps> = ({ text, id, value, callback }) => {
   const classes = useStyles();
-  // const { musicVolume } = useContext(MusicContext);
   const [volume, setVolume] = useState<number | number[]>(value as number);
 
   const handleChange = (event: any, val: number | number[]): void => {
