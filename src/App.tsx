@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, createContext } from 'react';
 import useSound from 'use-sound';
 import { Transition } from 'react-transition-group';
 import { cellsType } from './types';
@@ -33,6 +33,13 @@ const gameStates = {
   PROCESSING: 'PROCESSING',
 }
 
+interface MusicContextT {
+  handlerToggleVolumeMusic: () => void,
+  setMusicVolume: React.Dispatch<React.SetStateAction<number>>,
+}
+
+export const MusicContext = createContext({} as MusicContextT);
+
 const App: React.FC = () => {
   const initScore = (type: string): number => {
     let score = 0;
@@ -61,13 +68,31 @@ const App: React.FC = () => {
   const [score, setScore] = useState(initScore('mainScore'));
   const [isShowMess, setIsShowMess] = useState(false);
   const [isOpenMenu, setOpenMenu] = useState(false);
+  const [musicVolume, setMusicVolume] = useState(0.5);
+  const [musicPlay, setMusicPlay] = useState(false);
   const nodeRef = useRef(null);
   const audioHideRef = useRef(new Audio('/hide.mp3'));
-  const soundUrl = '/move.mp3';
+  const audioMoveRef = useRef(new Audio('/move.mp3'));
+  const soundUrl = '/music.mp3';
   const [play, { stop }] = useSound(
     soundUrl,
-    { volume: 0.5 }
+    { volume: musicVolume }
   );
+
+  const handlerToggleVolumeMusic = (): void => {
+    setMusicPlay((isMusic) => !isMusic);
+
+    if (musicPlay) {
+      stop();
+    } else {
+      play();
+    }
+  };
+
+  const musicController = {
+    handlerToggleVolumeMusic,
+    setMusicVolume,
+  };
 
   const handleClickBtnNewGame = () => {
     localStorage.removeItem('mainState');
@@ -93,7 +118,7 @@ const App: React.FC = () => {
   const processGame = async () => {
     setCells(state => {
       // new Audio('/hide_1.mp3').play();
-      play();
+      audioMoveRef.current.play();
       return {
         ...state,
         cells: [...moveCells(state.cells, state.moveDirection)],
@@ -102,7 +127,8 @@ const App: React.FC = () => {
 
     await delay(150);
 
-    stop();
+    audioMoveRef.current.pause();
+    audioMoveRef.current.currentTime = 0;
 
     setCells(state => {
       const { cells } = delAndIncreaseCell(state.cells, setScore, audioHideRef.current);
@@ -111,6 +137,9 @@ const App: React.FC = () => {
         cells,
       })
     });
+
+    audioHideRef.current.pause();
+    audioHideRef.current.currentTime = 0;
 
     setCells(state => ({
       ...state,
@@ -217,7 +246,9 @@ const App: React.FC = () => {
       </ControlPanel>
       <Field cells={mainState.cells} />
       <GameExplanation />
-      {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
+      <MusicContext.Provider value={musicController}>
+        {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
+      </MusicContext.Provider>
     </Layout>
   );
 };

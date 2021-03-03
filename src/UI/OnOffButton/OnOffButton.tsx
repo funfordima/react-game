@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { MusicContext } from '../../App';
 
 const Input = styled.input`
   display: none;
@@ -50,14 +51,20 @@ const Label = styled.label`
   }
 `;
 
-const OnOffButton: React.FC = () => (
+const OnOffButton: React.FC = () => {
+  const { handlerToggleVolumeMusic } = useContext(MusicContext);
+
+  return (
   <>
     <Input
       type='checkbox'
       id='switcher'
     />
-    <Label htmlFor='switcher'>ON</Label>
+    <Label htmlFor='switcher' onClick={handlerToggleVolumeMusic}>
+      ON
+    </Label>
   </>
 );
+};
 
 export default OnOffButton;

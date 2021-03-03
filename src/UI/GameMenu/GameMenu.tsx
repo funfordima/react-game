@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
 import OnOffButton from '../OnOffButton';
 import MusicSlider from '../MusicSlider';
+// import { MusicContext } from '../../App';
 
 const Overlay = styled.div`
   display: block;
@@ -128,33 +129,33 @@ interface GameMenuProps {
 }
 
 const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => (
-  <Overlay>
-    <BookingWidgetWrapper>
-      <BookingWidget>
-        <WidgetHeader>
-          <WidgetHeaderTitleContainer>
-            <WidgetBtnClose onClick={closeMenu}>
-              <BtnCloseSvg />
-            </WidgetBtnClose>
-            <WidgetTitle>
-              Menu
-              </WidgetTitle>
-          </WidgetHeaderTitleContainer>
-        </WidgetHeader>
-        <ServiceContainer>
-          <Span>Music</Span>
-          <MusicSlider text='music' />
-        </ServiceContainer>
-        <ServiceContainer>
-          <Span>Sound</Span>
-          <MusicSlider text='sound' />
-        </ServiceContainer>
-        <ServiceContainer>
-          <OnOffButton />
-        </ServiceContainer>
-      </BookingWidget>
-    </BookingWidgetWrapper>
-  </Overlay>
-);
+    <Overlay>
+      <BookingWidgetWrapper>
+        <BookingWidget>
+          <WidgetHeader>
+            <WidgetHeaderTitleContainer>
+              <WidgetBtnClose onClick={closeMenu}>
+                <BtnCloseSvg />
+              </WidgetBtnClose>
+              <WidgetTitle>
+                Menu
+                </WidgetTitle>
+            </WidgetHeaderTitleContainer>
+          </WidgetHeader>
+          <ServiceContainer>
+            <Span>Music</Span>
+            <MusicSlider text='music' />
+          </ServiceContainer>
+          <ServiceContainer>
+            <Span>Sound</Span>
+            <MusicSlider text='sound' />
+          </ServiceContainer>
+          <ServiceContainer>
+            <OnOffButton />
+          </ServiceContainer>
+        </BookingWidget>
+      </BookingWidgetWrapper>
+    </Overlay>
+  );
 
 export default GameMenu;
