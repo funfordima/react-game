@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const OpenMenuBtn = styled.button`
-  padding: 10px 20px;
+  padding: 8px 30px;
   position: absolute;
   top: 5px;
   right: 5px;
@@ -10,9 +10,10 @@ const OpenMenuBtn = styled.button`
   text-transform: capitalize;
   white-space: nowrap;
   align-items: center;
-  background-color: #ccc;
+  background: #2C2220;
   border-radius: 5px;
-  border: none;
+  border: 3px solid #4C422D;
+  box-shadow: inset 0px 0px 1px 2px #f9cb0e;
   color: #fff;
   cursor: pointer;
   outline: none;
@@ -20,6 +21,11 @@ const OpenMenuBtn = styled.button`
   
   &:hover {
     transform: scale(1.1);
+  }
+
+  @media (max-width: 805px) {
+    bottom: -50px;
+    top: inherit;
   }
 `;
 

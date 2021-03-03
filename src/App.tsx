@@ -15,6 +15,7 @@ import GameIntro from './UI/GameIntro';
 import GameExplanation from './UI/GameExplanation';
 import ScoreAdd from './UI/Score/ScoreAdditional';
 import OpenMenuBtn, { GameMenu } from './UI/GameMenu';
+import History from './UI/History';
 import { delay } from './utils';
 import './App.css';
 
@@ -39,6 +40,7 @@ interface MusicContextT {
   setAudioVolume: React.Dispatch<React.SetStateAction<number>>,
   musicVolume: number,
   audioVolume: number,
+  handleClickHistory: () => void,
   // setPlaybackRate:  React.Dispatch<React.SetStateAction<number>>,
 }
 
@@ -74,6 +76,7 @@ const App: React.FC = () => {
   const [isOpenMenu, setOpenMenu] = useState(false);
   const [musicVolume, setMusicVolume] = useState(initScore('musicVolume', 20) as number);
   const [audioVolume, setAudioVolume] = useState(initScore('audioVolume', 20) as number);
+  const [isOpenHistory, setOpenHistory] = useState(false);
   // const [playbackRate, setPlaybackRate] = useState(0.75);
   const [musicPlay, setMusicPlay] = useState(false);
   const nodeRef = useRef(null);
@@ -102,12 +105,17 @@ const App: React.FC = () => {
     }
   };
 
+  const handleClickHistory = () => {
+    setOpenHistory(true);
+  };
+
   const musicController = {
     handlerToggleVolumeMusic,
     setMusicVolume,
     setAudioVolume,
     musicVolume,
     audioVolume,
+    handleClickHistory,
     // setPlaybackRate
   };
 
@@ -264,6 +272,7 @@ const App: React.FC = () => {
       <MusicContext.Provider value={musicController}>
         {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
       </MusicContext.Provider>
+      {isOpenHistory && <History />}
     </Layout>
   );
 };

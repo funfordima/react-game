@@ -4,6 +4,7 @@ import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
 import OnOffButton from '../OnOffButton';
 import MusicSlider from '../MusicSlider';
 import { MusicContext } from '../../App';
+// import History from '../History';
 
 const Overlay = styled.div`
   display: block;
@@ -53,7 +54,6 @@ const WidgetHeader = styled.div`
   padding: 24px 50px 21px;
   height: 96px;
   width: 100%;
-  // border-bottom: 5px solid #bbada0;
   text-align: center;
 `;
 
@@ -129,7 +129,7 @@ interface GameMenuProps {
 }
 
 const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
-  const { setMusicVolume, setAudioVolume, musicVolume, audioVolume } = useContext(MusicContext);
+  const { setMusicVolume, setAudioVolume, musicVolume, audioVolume, handleClickHistory } = useContext(MusicContext);
 
   const handleMusicVolume = (value: number): void => {
     setMusicVolume(Number(value));
@@ -140,6 +140,7 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
     setAudioVolume(Number(value));
     localStorage.setItem('audioVolume', `${value}`);
   };
+
   return (
     <Overlay>
       <BookingWidgetWrapper>
@@ -164,6 +165,9 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
           </ServiceContainer>
           <ServiceContainer>
             <OnOffButton />
+          </ServiceContainer>
+          <ServiceContainer>
+            <Span onClick={handleClickHistory}>Battle History</Span>
           </ServiceContainer>
         </BookingWidget>
       </BookingWidgetWrapper>
