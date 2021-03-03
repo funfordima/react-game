@@ -10,7 +10,7 @@ const Main = styled.main`
   position: relative;
 
   @media (max-width: 805px) {
-    padding: 5px;
+    padding: 10px;
   }
 `;
 
