@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
+import { MusicContext } from '../../App';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,10 +51,27 @@ interface MusicSliderProps {
 const MusicSlider: React.FC<MusicSliderProps> = ({ text }) => {
   const classes = useStyles();
 
+  const [volume, setVolume] = useState<number | number[] >(5 as number);
+  const { setMusicVolume } = useContext(MusicContext);
+
+  const handleChange = (event: any, value: number | number[] ): void => {
+    setVolume(value);  
+    setMusicVolume(Number(value));
+  };
+
   return (
     <div className={classes.root}>
       <Typography gutterBottom>{text}</Typography>
-      <PrettoSlider valueLabelDisplay="auto" aria-label={`${text} slider`} defaultValue={20} />
+      <PrettoSlider 
+        value={volume}
+        onChange={handleChange} 
+        valueLabelDisplay="auto" 
+        aria-label={`${text} slider`} 
+        // defaultValue={20} 
+        step={1}
+        min={0}
+        max={100}
+      />
       <div className={classes.margin} />
     </div>
   );

@@ -36,6 +36,7 @@ const gameStates = {
 interface MusicContextT {
   handlerToggleVolumeMusic: () => void,
   setMusicVolume: React.Dispatch<React.SetStateAction<number>>,
+  // setPlaybackRate:  React.Dispatch<React.SetStateAction<number>>,
 }
 
 export const MusicContext = createContext({} as MusicContextT);
@@ -68,15 +69,19 @@ const App: React.FC = () => {
   const [score, setScore] = useState(initScore('mainScore'));
   const [isShowMess, setIsShowMess] = useState(false);
   const [isOpenMenu, setOpenMenu] = useState(false);
-  const [musicVolume, setMusicVolume] = useState(0.5);
+  const [musicVolume, setMusicVolume] = useState(20 as number);
+  // const [playbackRate, setPlaybackRate] = useState(0.75);
   const [musicPlay, setMusicPlay] = useState(false);
   const nodeRef = useRef(null);
   const audioHideRef = useRef(new Audio('/hide.mp3'));
   const audioMoveRef = useRef(new Audio('/move.mp3'));
   const soundUrl = '/music.mp3';
-  const [play, { stop }] = useSound(
+  const [play, { stop, sound }] = useSound(
     soundUrl,
-    { volume: musicVolume }
+    { 
+      // playbackRate,
+      volume: musicVolume / 100,
+    },
   );
 
   const handlerToggleVolumeMusic = (): void => {
@@ -85,6 +90,8 @@ const App: React.FC = () => {
     if (musicPlay) {
       stop();
     } else {
+      /* eslint no-underscore-dangle: 0 */
+      sound._loop = true;
       play();
     }
   };
@@ -92,6 +99,7 @@ const App: React.FC = () => {
   const musicController = {
     handlerToggleVolumeMusic,
     setMusicVolume,
+    // setPlaybackRate
   };
 
   const handleClickBtnNewGame = () => {
