@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
 import OnOffButton from '../OnOffButton';
+import MusicSlider from '../MusicSlider';
 
 const Overlay = styled.div`
   display: block;
@@ -96,6 +97,8 @@ const ServiceContainer = styled.div`
 `;
 
 const Span = styled.span`
+  display: inline-block;
+  margin-bottom: 10px;
   padding: 5px 50px;
   position: relative;
   border-radius: 20px;
@@ -140,9 +143,11 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => (
         </WidgetHeader>
         <ServiceContainer>
           <Span>Music</Span>
+          <MusicSlider text='music' />
         </ServiceContainer>
         <ServiceContainer>
           <Span>Sound</Span>
+          <MusicSlider text='sound' />
         </ServiceContainer>
         <ServiceContainer>
           <OnOffButton />

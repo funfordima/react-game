@@ -7,6 +7,7 @@ const Main = styled.main`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
 const Content = styled.div`

@@ -14,6 +14,7 @@ import ScoreWrapper from './UI/Score/ScoreWrapper';
 import GameIntro from './UI/GameIntro';
 import GameExplanation from './UI/GameExplanation';
 import ScoreAdd from './UI/Score/ScoreAdditional';
+import { OpenMenuBtn, GameMenu } from './UI/GameMenu';
 import { delay } from './utils';
 import './App.css';
 
@@ -59,6 +60,7 @@ const App: React.FC = () => {
   const [bestScore, setBestScore] = useState(initScore('bestScore'));
   const [score, setScore] = useState(initScore('mainScore'));
   const [isShowMess, setIsShowMess] = useState(false);
+  const [isOpenMenu, setOpenMenu] = useState(false);
   const nodeRef = useRef(null);
   const audioHideRef = useRef(new Audio('/hide.mp3'));
   const soundUrl = '/move.mp3';
@@ -77,6 +79,10 @@ const App: React.FC = () => {
     });
   };
 
+  const handleClickBtnOpen = (): void => {
+    setOpenMenu((state) => !state);
+  };
+
   const useKeyCodeToDirection = {
     KeyA: directions.LEFT,
     KeyD: directions.RIGHT,
@@ -87,7 +93,6 @@ const App: React.FC = () => {
   const processGame = async () => {
     setCells(state => {
       // new Audio('/hide_1.mp3').play();
-      // setIsHovering(true);
       play();
       return {
         ...state,
@@ -97,7 +102,6 @@ const App: React.FC = () => {
 
     await delay(150);
 
-    // setIsHovering(false);
     stop();
 
     setCells(state => {
@@ -184,6 +188,7 @@ const App: React.FC = () => {
 
   return (
     <Layout>
+      <OpenMenuBtn onClick={handleClickBtnOpen}>Menu</OpenMenuBtn>
       <Heading>
         <Title text='2048' />
         <ScoreWrapper>
@@ -212,6 +217,7 @@ const App: React.FC = () => {
       </ControlPanel>
       <Field cells={mainState.cells} />
       <GameExplanation />
+      {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
     </Layout>
   );
 };
