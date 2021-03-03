@@ -129,7 +129,7 @@ interface GameMenuProps {
 }
 
 const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
-  const { setMusicVolume, setAudioVolume } = useContext(MusicContext);
+  const { setMusicVolume, setAudioVolume, musicVolume, audioVolume } = useContext(MusicContext);
 
   const handleMusicVolume = (value: number): void => {
     setMusicVolume(Number(value));
@@ -156,11 +156,11 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
           </WidgetHeader>
           <ServiceContainer>
             <Span>Music</Span>
-            <MusicSlider id='music' text='music' callback={handleMusicVolume}/>
+            <MusicSlider id='music' text='music' callback={handleMusicVolume} value={musicVolume} />
           </ServiceContainer>
           <ServiceContainer>
             <Span>Sound</Span>
-            <MusicSlider id='audio' text='sound' callback={handleAudioVolume}/>
+            <MusicSlider id='audio' text='sound' callback={handleAudioVolume} value={audioVolume} />
           </ServiceContainer>
           <ServiceContainer>
             <OnOffButton />

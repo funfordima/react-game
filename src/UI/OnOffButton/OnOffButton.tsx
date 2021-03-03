@@ -55,16 +55,16 @@ const OnOffButton: React.FC = () => {
   const { handlerToggleVolumeMusic } = useContext(MusicContext);
 
   return (
-  <>
-    <Input
-      type='checkbox'
-      id='switcher'
-    />
-    <Label htmlFor='switcher' onClick={handlerToggleVolumeMusic}>
-      ON
+    <>
+      <Input
+        type='checkbox'
+        id='switcher'
+      />
+      <Label htmlFor='switcher' onClick={handlerToggleVolumeMusic}>
+        ON
     </Label>
-  </>
-);
+    </>
+  );
 };
 
 export default OnOffButton;

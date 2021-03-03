@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Slider from '@material-ui/core/Slider';
 import Typography from '@material-ui/core/Typography';
-import { MusicContext } from '../../App';
+// import { MusicContext } from '../../App';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,29 +47,30 @@ const PrettoSlider = withStyles({
 interface MusicSliderProps {
   text: string,
   id: string,
+  value: number,
   callback: (value: number) => void,
 };
 
-const MusicSlider: React.FC<MusicSliderProps> = ({ text, id, callback }) => {
+const MusicSlider: React.FC<MusicSliderProps> = ({ text, id, value, callback }) => {
   const classes = useStyles();
-  const { musicVolume } = useContext(MusicContext);
-  const [volume, setVolume] = useState<number | number[] >(musicVolume as number);
+  // const { musicVolume } = useContext(MusicContext);
+  const [volume, setVolume] = useState<number | number[]>(value as number);
 
-  const handleChange = (event: any, value: number | number[] ): void => {
-    setVolume(value);  
-    callback(Number(value));
+  const handleChange = (event: any, val: number | number[]): void => {
+    setVolume(val);
+    callback(Number(val));
   };
 
   return (
     <div className={classes.root}>
       <Typography gutterBottom>{text}</Typography>
       <PrettoSlider
-        id={id} 
+        id={id}
         value={volume}
-        onChange={handleChange} 
-        valueLabelDisplay="auto" 
-        aria-label={`${text} slider`} 
-        // defaultValue={20} 
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        aria-label={`${text} slider`}
+        defaultValue={volume}
         step={1}
         min={0}
         max={100}

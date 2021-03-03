@@ -14,7 +14,7 @@ import ScoreWrapper from './UI/Score/ScoreWrapper';
 import GameIntro from './UI/GameIntro';
 import GameExplanation from './UI/GameExplanation';
 import ScoreAdd from './UI/Score/ScoreAdditional';
-import { OpenMenuBtn, GameMenu } from './UI/GameMenu';
+import OpenMenuBtn, { GameMenu } from './UI/GameMenu';
 import { delay } from './utils';
 import './App.css';
 
@@ -82,7 +82,7 @@ const App: React.FC = () => {
   const soundUrl = '/music.mp3';
   const [play, { stop, sound }] = useSound(
     soundUrl,
-    { 
+    {
       // playbackRate,
       volume: musicVolume / 100,
     },
@@ -135,9 +135,9 @@ const App: React.FC = () => {
   const processGame = async () => {
     audioMoveRef.current.play();
     setCells(state => ({
-        ...state,
-        cells: [...moveCells(state.cells, state.moveDirection)],
-      })
+      ...state,
+      cells: [...moveCells(state.cells, state.moveDirection)],
+    })
     );
 
     await delay(150);
