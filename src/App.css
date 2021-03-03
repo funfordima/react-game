@@ -13,3 +13,7 @@ body {
   font-family: clear sans, helvetica neue, Arial, sans-serif;
   font-size: 18px;
 }
+
+#switcher:checked ~ [for='switcher']:after {
+  left: 53px;
+}
