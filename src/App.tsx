@@ -16,6 +16,7 @@ import GameExplanation from './UI/GameExplanation';
 import ScoreAdd from './UI/Score/ScoreAdditional';
 import OpenMenuBtn, { GameMenu } from './UI/GameMenu';
 import History from './UI/History';
+import EndGameWidget from './UI/EndGameWidget';
 import { delay } from './utils';
 import './App.css';
 
@@ -32,6 +33,7 @@ interface MainState {
 const gameStates = {
   IDLE: 'IDLE',
   PROCESSING: 'PROCESSING',
+  END: 'END',
 }
 
 interface MusicContextT {
@@ -77,9 +79,11 @@ const App: React.FC = () => {
   const [musicVolume, setMusicVolume] = useState(initScore('musicVolume', 20) as number);
   const [audioVolume, setAudioVolume] = useState(initScore('audioVolume', 20) as number);
   const [isOpenHistory, setOpenHistory] = useState(false);
+  const [isEnd, setEnd] = useState(false);
   // const [playbackRate, setPlaybackRate] = useState(0.75);
   const [musicPlay, setMusicPlay] = useState(false);
   const nodeRef = useRef(null);
+  const directionRef = useRef(new Set());
   // const audioHideRef = useRef(new Audio('/hide.mp3'));
   const audioMoveRef = useRef(new Audio('/move.mp3'));
   const soundUrl = '/music.mp3';
@@ -133,6 +137,15 @@ const App: React.FC = () => {
     setOpenMenu((state) => !state);
   };
 
+  const handleCloseEndGameWidget = (): void => {
+    setEnd(false);
+    handleClickBtnNewGame();
+  };
+
+  const handleCloseHistoryWidget = (): void => {
+    setOpenHistory(false);
+  };
+
   const useKeyCodeToDirection = {
     KeyA: directions.LEFT,
     KeyD: directions.RIGHT,
@@ -142,11 +155,38 @@ const App: React.FC = () => {
 
   const processGame = async () => {
     audioMoveRef.current.play();
-    setCells(state => ({
-      ...state,
-      cells: [...moveCells(state.cells, state.moveDirection)],
-    })
-    );
+    setCells(state => {
+      const newCells = [...moveCells(state.cells, state.moveDirection)];
+
+      if (state.cells.length === newCells.length && state.cells.length === 16) {
+        directionRef.current.add(state.moveDirection);
+        const prevFilterCells = state.cells.map(({ value }) => value);
+        const newFilterCells = newCells.map(({ value }) => value);
+        let isEqual = false;
+        prevFilterCells.forEach((el, i) => {
+          if (el === newFilterCells[i]) {
+            isEqual = true;
+          } else {
+            isEqual = false;
+          }
+        });
+
+        if (isEqual && directionRef.current.size === 4) {
+          return ({
+            ...state,
+            gameState: gameStates.END,
+            cells: newCells,
+          });
+        }
+      } else {
+        directionRef.current.clear();
+      }
+
+      return ({
+        ...state,
+        cells: newCells,
+      })
+    });
 
     await delay(150);
 
@@ -155,6 +195,7 @@ const App: React.FC = () => {
 
     setCells(state => {
       const { cells } = delAndIncreaseCell(state.cells, setScore);
+
       return ({
         ...state,
         cells,
@@ -164,39 +205,34 @@ const App: React.FC = () => {
     // audioHideRef.current.pause();
     // audioHideRef.current.currentTime = 0;
 
-    setCells(state => ({
-      ...state,
-      cells: [...addCell([...state.cells])],
-    }));
+    setCells(state => {
+      const newCells = [...addCell([...state.cells])];
+
+      return ({
+        ...state,
+        cells: newCells,
+      });
+    });
 
     setCells(state => {
-      const newState = {
-        ...state,
-        gameState: gameStates.IDLE,
-        moveDirection: '',
-      };
-      localStorage.setItem('mainState', JSON.stringify(newState));
-      localStorage.setItem('mainScore', JSON.stringify(score));
+      if (state.gameState !== gameStates.END) {
+        const newState = {
+          ...state,
+          gameState: gameStates.IDLE,
+          moveDirection: '',
+        };
+        localStorage.setItem('mainState', JSON.stringify(newState));
+        localStorage.setItem('mainScore', JSON.stringify(score));
 
-      return newState;
+        return newState;
+      }
+
+      return state;
     });
   };
 
   const handleKeyPress = async ({ code }: KeyboardEvent) => {
     if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
-      // setCells((prevState) => {
-      //   const cellsWithMoving = [...moveCells(prevState.cells, useKeyCodeToDirection[code])];
-      //   // await delay(100);
-      //   const { cells, score } = delAndIncreaseCell(cellsWithMoving, prevState.score);
-      //   const newState = {
-      //     cells: [...addCell([...cells])],
-      //     score,
-      //   };
-      //   localStorage.setItem('mainState', JSON.stringify(newState));
-
-      //   return newState;
-      // })
-
       setCells(state => {
         if (state.gameState === gameStates.IDLE) {
           return {
@@ -205,6 +241,7 @@ const App: React.FC = () => {
             moveDirection: (useKeyCodeToDirection as KeyCodeToDirectionType)[code],
           }
         }
+
         return state
       });
     }
@@ -212,6 +249,19 @@ const App: React.FC = () => {
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress);
+    const initHistory = [
+      { name: 'Ivan', value: 50 },
+      { name: 'Pit', value: 500 },
+      { name: 'Sara', value: 200 },
+      { name: 'Rex', value: 300 },
+      { name: 'RRR', value: 400 },
+      { name: 'TTT', value: 600 },
+      { name: 'YYY', value: 700 },
+      { name: 'UUU', value: 800 },
+      { name: 'III', value: 900 },
+      { name: 'NNN', value: 1000 },
+    ];
+    localStorage.setItem('records', JSON.stringify(initHistory));
 
     return () => document.removeEventListener('keydown', handleKeyPress);
   });
@@ -227,16 +277,32 @@ const App: React.FC = () => {
     setIsShowMess(true);
   }, [score]);
 
-  // useEffect(() => {
-  //   setIsShowMess(false);
-  // }, [isShow]);
-
   useEffect(() => {
     if (mainState.gameState === gameStates.PROCESSING) {
       processGame();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainState.gameState]);
+
+  type RecordType = {
+    name: string,
+    value: number,
+  };
+
+  useEffect(() => {
+    if (mainState.cells.length === 16 && mainState.gameState === gameStates.END) {
+      setEnd(true);
+      const records = JSON.parse(localStorage.getItem('records') as string);
+      records.push({
+        name: 'User',
+        value: score,
+      });
+      records.sort((a: RecordType, b: RecordType) => a.value - b.value);
+      localStorage.setItem('records', JSON.stringify(records.slice(0, 10)));
+    }
+  }, [mainState.cells.length, mainState.gameState, score]);
+
+  const records = JSON.parse(localStorage.getItem('records') as string);
 
   return (
     <Layout>
@@ -272,7 +338,8 @@ const App: React.FC = () => {
       <MusicContext.Provider value={musicController}>
         {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
       </MusicContext.Provider>
-      {isOpenHistory && <History />}
+      {isOpenHistory && <History onClose={handleCloseHistoryWidget} records={records} />}
+      {isEnd && <EndGameWidget result={score} onClose={handleCloseEndGameWidget} />}
     </Layout>
   );
 };
