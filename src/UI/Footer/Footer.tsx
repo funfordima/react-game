@@ -9,7 +9,6 @@ const FooterWrapper = styled.div`
   width: 100%;
   background-color: #fff;
   box-shadow: 0 -1px 0 0 rgb(0 0 0 / 8%);
-  position: relative;
 `;
 
 const FooterLineContainer = styled.div`
