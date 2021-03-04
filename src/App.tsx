@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useRef, createContext } from 'react';
 import useSound from 'use-sound';
 import { Transition } from 'react-transition-group';
-import { cellsType } from './types';
+import {
+  KeyCodeToDirectionType,
+  MainState,
+  MusicContextT,
+  MainThemeContextT,
+  RecordType,
+} from './types';
 import Layout from './UI/Layout';
 import Field from './UI/Field';
 import ScoreContainer from './UI/Score';
@@ -18,56 +24,20 @@ import OpenMenuBtn, { GameMenu } from './UI/GameMenu';
 import History from './UI/History';
 import EndGameWidget from './UI/EndGameWidget';
 import Footer from './UI/Footer';
-import { delay } from './utils';
+import { delay, initMainTheme, initScore } from './utils';
 import './App.css';
 
-interface KeyCodeToDirectionType {
-  [key: string]: string,
-}
-
-interface MainState {
-  cells: cellsType[],
-  gameState: string,
-  moveDirection: string,
-}
-
 const gameStates = {
-  IDLE: 'IDLE',
+  INIT: 'INIT',
   PROCESSING: 'PROCESSING',
   END: 'END',
-}
-
-interface MusicContextT {
-  handlerToggleVolumeMusic: () => void,
-  setMusicVolume: React.Dispatch<React.SetStateAction<number>>,
-  setAudioVolume: React.Dispatch<React.SetStateAction<number>>,
-  musicVolume: number,
-  audioVolume: number,
-  handleClickHistory: () => void,
-  // setPlaybackRate:  React.Dispatch<React.SetStateAction<number>>,
-}
-
-interface MainThemeContextT {
-  value: boolean,
-  toggleMainTheme: () => void,
-  toggleCellsTheme: () => void,
-  toggleCellTheme: () => void,
-}
+};
+const soundUrl = '/music.mp3';
 
 export const MusicContext = createContext({} as MusicContextT);
 export const MainThemeContext = createContext({} as MainThemeContextT);
 
 const App: React.FC = () => {
-  const initScore = (type: string, value = 0): number => {
-    let score = value;
-
-    if (localStorage.getItem(type)) {
-      score = Number(localStorage.getItem(type));
-    }
-
-    return score;
-  };
-
   const initMainState = (): MainState => {
     if (localStorage.getItem('mainState')) {
       return JSON.parse(String(localStorage.getItem('mainState')));
@@ -75,18 +45,10 @@ const App: React.FC = () => {
 
     return {
       cells: initCells(),
-      gameState: gameStates.IDLE,
+      gameState: gameStates.INIT,
       moveDirection: '',
     }
   };
-
-  const initMainTheme = (text: string): boolean => {
-    if (localStorage.getItem(text)) {
-      return JSON.parse(String(localStorage.getItem(text)));
-    }
-
-    return false;
-  }
 
   const [mainState, setCells] = useState(initMainState());
   const [bestScore, setBestScore] = useState(initScore('bestScore'));
@@ -107,7 +69,6 @@ const App: React.FC = () => {
   const directionRef = useRef(new Set());
   // const audioHideRef = useRef(new Audio('/hide.mp3'));
   const audioMoveRef = useRef(new Audio('/move.mp3'));
-  const soundUrl = '/music.mp3';
   const [play, { stop, sound }] = useSound(
     soundUrl,
     {
@@ -136,31 +97,14 @@ const App: React.FC = () => {
 
   const toggleMainTheme = (): void => {
     setMainTheme((theme) => !theme);
-  }
+  };
 
   const toggleCellsTheme = (): void => {
     setCellsTheme((theme) => !theme);
-  }
+  };
 
   const toggleCellTheme = (): void => {
     setCellTheme((theme) => !theme);
-  }
-
-  const musicController = {
-    handlerToggleVolumeMusic,
-    setMusicVolume,
-    setAudioVolume,
-    musicVolume,
-    audioVolume,
-    handleClickHistory,
-    // setPlaybackRate
-  };
-
-  const mainThemeCtx = {
-    value: mainTheme,
-    toggleMainTheme,
-    toggleCellsTheme,
-    toggleCellTheme,
   };
 
   const handleClickBtnNewGame = () => {
@@ -168,7 +112,7 @@ const App: React.FC = () => {
     setScore(0);
     setCells({
       cells: initCells(),
-      gameState: gameStates.IDLE,
+      gameState: gameStates.INIT,
       moveDirection: '',
     });
   };
@@ -188,6 +132,23 @@ const App: React.FC = () => {
 
   const handleClickBtnPlay = (): void => {
     setPlay((v) => !v);
+  };
+
+  const musicController = {
+    handlerToggleVolumeMusic,
+    setMusicVolume,
+    setAudioVolume,
+    musicVolume,
+    audioVolume,
+    handleClickHistory,
+    // setPlaybackRate
+  };
+
+  const mainThemeCtx = {
+    value: mainTheme,
+    toggleMainTheme,
+    toggleCellsTheme,
+    toggleCellTheme,
   };
 
   const useKeyCodeToDirection = {
@@ -266,7 +227,7 @@ const App: React.FC = () => {
       if (state.gameState !== gameStates.END) {
         const newState = {
           ...state,
-          gameState: gameStates.IDLE,
+          gameState: gameStates.INIT,
           moveDirection: '',
         };
         localStorage.setItem('mainState', JSON.stringify(newState));
@@ -281,7 +242,7 @@ const App: React.FC = () => {
   const handleKeyPress = async ({ code }: KeyboardEvent) => {
     if (['KeyA', 'KeyD', 'KeyW', 'KeyS', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
       setCells(state => {
-        if (state.gameState === gameStates.IDLE) {
+        if (state.gameState === gameStates.INIT) {
           return {
             ...state,
             gameState: gameStates.PROCESSING,
@@ -332,11 +293,6 @@ const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainState.gameState]);
 
-  type RecordType = {
-    name: string,
-    value: number,
-  };
-
   useEffect(() => {
     if (mainState.cells.length === 16 && mainState.gameState === gameStates.END) {
       setEnd(true);
@@ -362,7 +318,7 @@ const App: React.FC = () => {
       const direct = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
 
       setCells(state => {
-        if (state.gameState === gameStates.IDLE) {
+        if (state.gameState === gameStates.INIT) {
           return {
             ...state,
             gameState: gameStates.PROCESSING,
