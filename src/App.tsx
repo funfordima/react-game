@@ -17,6 +17,7 @@ import ScoreAdd from './UI/Score/ScoreAdditional';
 import OpenMenuBtn, { GameMenu } from './UI/GameMenu';
 import History from './UI/History';
 import EndGameWidget from './UI/EndGameWidget';
+import Footer from './UI/Footer';
 import { delay } from './utils';
 import './App.css';
 
@@ -151,6 +152,10 @@ const App: React.FC = () => {
     KeyD: directions.RIGHT,
     KeyW: directions.UP,
     KeyS: directions.DOWN,
+    ArrowLeft: directions.LEFT,
+    ArrowRight: directions.RIGHT,
+    ArrowUp: directions.UP,
+    ArrowDown: directions.DOWN,
   } as KeyCodeToDirectionType;
 
   const processGame = async () => {
@@ -232,7 +237,7 @@ const App: React.FC = () => {
   };
 
   const handleKeyPress = async ({ code }: KeyboardEvent) => {
-    if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
+    if (['KeyA', 'KeyD', 'KeyW', 'KeyS', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
       setCells(state => {
         if (state.gameState === gameStates.IDLE) {
           return {
@@ -305,42 +310,45 @@ const App: React.FC = () => {
   const records = JSON.parse(localStorage.getItem('records') as string);
 
   return (
-    <Layout>
-      <OpenMenuBtn onClick={handleClickBtnOpen}>Menu</OpenMenuBtn>
-      <Heading>
-        <Title text='2048' />
-        <ScoreWrapper>
-          <ScoreContainer text='score'>
-            {score}
-            <Transition
-              nodeRef={nodeRef}
-              in={isShowMess}
-              timeout={200}
-              unmountOnExit
-              onEntered={() => setIsShowMess(false)}
-            >
-              {state => <ScoreAdd ref={nodeRef} className={`alert ${state}`}>{score}</ScoreAdd>}
-            </Transition>
-          </ScoreContainer>
-          <ScoreContainer text='best'>
-            {bestScore}
-          </ScoreContainer>
-        </ScoreWrapper>
-      </Heading>
-      <ControlPanel>
-        <GameIntro />
-        <Button onClick={handleClickBtnNewGame}>
-          New Game
+    <>
+      <Layout>
+        <OpenMenuBtn onClick={handleClickBtnOpen}>Menu</OpenMenuBtn>
+        <Heading>
+          <Title text='2048' />
+          <ScoreWrapper>
+            <ScoreContainer text='score'>
+              {score}
+              <Transition
+                nodeRef={nodeRef}
+                in={isShowMess}
+                timeout={200}
+                unmountOnExit
+                onEntered={() => setIsShowMess(false)}
+              >
+                {state => <ScoreAdd ref={nodeRef} className={`alert ${state}`}>{score}</ScoreAdd>}
+              </Transition>
+            </ScoreContainer>
+            <ScoreContainer text='best'>
+              {bestScore}
+            </ScoreContainer>
+          </ScoreWrapper>
+        </Heading>
+        <ControlPanel>
+          <GameIntro />
+          <Button onClick={handleClickBtnNewGame}>
+            New Game
         </Button>
-      </ControlPanel>
-      <Field cells={mainState.cells} />
-      <GameExplanation />
-      <MusicContext.Provider value={musicController}>
-        {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
-      </MusicContext.Provider>
-      {isOpenHistory && <History onClose={handleCloseHistoryWidget} records={records} />}
-      {isEnd && <EndGameWidget result={score} onClose={handleCloseEndGameWidget} />}
-    </Layout>
+        </ControlPanel>
+        <Field cells={mainState.cells} />
+        <GameExplanation />
+        <MusicContext.Provider value={musicController}>
+          {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
+        </MusicContext.Provider>
+        {isOpenHistory && <History onClose={handleCloseHistoryWidget} records={records} />}
+        {isEnd && <EndGameWidget result={score} onClose={handleCloseEndGameWidget} />}
+      </Layout>
+      <Footer />
+    </>
   );
 };
 
