@@ -23,10 +23,10 @@ const OpenMenuBtn = styled.button`
     transform: scale(1.1);
   }
 
-  @media (max-width: 805px) {
-    bottom: -50px;
-    top: inherit;
-  }
+  // @media (max-width: 805px) {
+  //   bottom: -50px;
+  //   top: inherit;
+  // }
 `;
 
 export default OpenMenuBtn;

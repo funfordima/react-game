@@ -100,6 +100,7 @@ const App: React.FC = () => {
   const [cellsTheme, setCellsTheme] = useState(initMainTheme('cellsTheme'));
   const [cellTheme, setCellTheme] = useState(initMainTheme('cellTheme'));
   const [isEnd, setEnd] = useState(false);
+  const [isPlay, setPlay] = useState(false);
   // const [playbackRate, setPlaybackRate] = useState(0.75);
   const [musicPlay, setMusicPlay] = useState(false);
   const nodeRef = useRef(null);
@@ -183,6 +184,10 @@ const App: React.FC = () => {
 
   const handleCloseHistoryWidget = (): void => {
     setOpenHistory(false);
+  };
+
+  const handleClickBtnPlay = (): void => {
+    setPlay((v) => !v);
   };
 
   const useKeyCodeToDirection = {
@@ -351,10 +356,40 @@ const App: React.FC = () => {
   useEffect(() => localStorage.setItem('cellsTheme', JSON.stringify(cellsTheme)), [cellsTheme]);
   useEffect(() => localStorage.setItem('cellTheme', JSON.stringify(cellTheme)), [cellTheme]);
 
+  useEffect(() => {
+    handleClickBtnNewGame();
+    const move = () => {
+      const direct = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
+
+      setCells(state => {
+        if (state.gameState === gameStates.IDLE) {
+          return {
+            ...state,
+            gameState: gameStates.PROCESSING,
+            moveDirection: direct[Math.floor(Math.random() * 4)],
+          }
+        }
+
+        return state
+      });
+    };
+
+    let id: number;
+
+    if (isPlay) {
+      id = window.setInterval(() => move(), 2000);
+    }
+
+    return () => window.clearInterval(id);
+  }, [isPlay]);
+
   return (
     <>
       <MainThemeContext.Provider value={mainThemeCtx}>
         <Layout val={mainTheme}>
+          <Button onClick={handleClickBtnPlay}>
+            Autoplay
+          </Button>
           <OpenMenuBtn onClick={handleClickBtnOpen}>Menu</OpenMenuBtn>
           <Heading>
             <Title text='2048' />
@@ -380,7 +415,7 @@ const App: React.FC = () => {
             <GameIntro />
             <Button onClick={handleClickBtnNewGame}>
               New Game
-        </Button>
+            </Button>
           </ControlPanel>
           <Field cells={mainState.cells} cellsTheme={cellsTheme} cellTheme={cellTheme} />
           <GameExplanation />
