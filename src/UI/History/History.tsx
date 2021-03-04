@@ -17,7 +17,7 @@ const Overlay = styled.div`
 const Widget = styled.div`
   margin: auto;
   width: 400px;
-  height: 400px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,28 +59,43 @@ const ContentContainer = styled.div`
   font-size: 20px;
   text-transform: uppercase;
   font-family: monospace;
-
-  & p {
-    padding: 5px 10px;
-    width: 80%;
-    text-align: left;
-    border-bottom: 2px solid #FCE62F;
-  }
 `;
 
 const Content = styled.p`
+  padding: 5px 10px;
+  width: 80%;
+  text-align: left;
+  border-bottom: 2px solid #FCE62F;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 `;
 
-const History: React.FC = () => (
-  <Overlay>
+type RecordType = {
+  name: string,
+  value: number,
+};
+
+interface HistoryProps {
+  onClose: () => void,
+  records: RecordType[],
+}
+
+const History: React.FC<HistoryProps> = ({ onClose, records }) => (
+  <Overlay onClick={onClose}>
     <Widget>
       <WidgetTitle>
         <span>Battle : </span>
         <span>History</span>
       </WidgetTitle>
       <ContentContainer>
-        <Content>1. 1235</Content>
-        <Content>2. 2000</Content>
+        {records.map(({ value, name }, ind) => (<Content key={`${(value * Math.random()).toFixed(3)}`}>
+          <span>{ind}</span>
+          &nbsp;
+          <span>{name}</span>
+          &nbsp;
+          <span>{value}</span>
+        </Content>))}
       </ContentContainer>
     </Widget>
   </Overlay>

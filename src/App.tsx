@@ -142,6 +142,10 @@ const App: React.FC = () => {
     handleClickBtnNewGame();
   };
 
+  const handleCloseHistoryWidget = (): void => {
+    setOpenHistory(false);
+  };
+
   const useKeyCodeToDirection = {
     KeyA: directions.LEFT,
     KeyD: directions.RIGHT,
@@ -245,7 +249,19 @@ const App: React.FC = () => {
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress);
-    localStorage.setItem('records', JSON.stringify([200, 500, 800, 1000, 100, 700, 600, 300, 900, 1001]));
+    const initHistory = [
+      { name: 'Ivan', value: 50 },
+      { name: 'Pit', value: 500 },
+      { name: 'Sara', value: 200 },
+      { name: 'Rex', value: 300 },
+      { name: 'RRR', value: 400 },
+      { name: 'TTT', value: 600 },
+      { name: 'YYY', value: 700 },
+      { name: 'UUU', value: 800 },
+      { name: 'III', value: 900 },
+      { name: 'NNN', value: 1000 },
+    ];
+    localStorage.setItem('records', JSON.stringify(initHistory));
 
     return () => document.removeEventListener('keydown', handleKeyPress);
   });
@@ -268,15 +284,25 @@ const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainState.gameState]);
 
+  type RecordType = {
+    name: string,
+    value: number,
+  };
+
   useEffect(() => {
     if (mainState.cells.length === 16 && mainState.gameState === gameStates.END) {
       setEnd(true);
-      const records = JSON.parse(localStorage.getItem('records') as string) as number[];
-      records.sort((a: number, b: number) => a - b);
+      const records = JSON.parse(localStorage.getItem('records') as string);
+      records.push({
+        name: 'User',
+        value: score,
+      });
+      records.sort((a: RecordType, b: RecordType) => a.value - b.value);
       localStorage.setItem('records', JSON.stringify(records.slice(0, 10)));
-      console.log('end');
     }
-  }, [mainState.cells.length, mainState.gameState]);
+  }, [mainState.cells.length, mainState.gameState, score]);
+
+  const records = JSON.parse(localStorage.getItem('records') as string);
 
   return (
     <Layout>
@@ -312,7 +338,7 @@ const App: React.FC = () => {
       <MusicContext.Provider value={musicController}>
         {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
       </MusicContext.Provider>
-      {isOpenHistory && <History />}
+      {isOpenHistory && <History onClose={handleCloseHistoryWidget} records={records} />}
       {isEnd && <EndGameWidget result={score} onClose={handleCloseEndGameWidget} />}
     </Layout>
   );
