@@ -270,7 +270,6 @@ const App: React.FC = () => {
           moveDirection: '',
         };
         localStorage.setItem('mainState', JSON.stringify(newState));
-        localStorage.setItem('mainScore', JSON.stringify(score));
 
         return newState;
       }
@@ -323,6 +322,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     setIsShowMess(true);
+    localStorage.setItem('mainScore', JSON.stringify(score));
   }, [score]);
 
   useEffect(() => {
@@ -357,7 +357,7 @@ const App: React.FC = () => {
   useEffect(() => localStorage.setItem('cellTheme', JSON.stringify(cellTheme)), [cellTheme]);
 
   useEffect(() => {
-    handleClickBtnNewGame();
+    // handleClickBtnNewGame();
     const move = () => {
       const direct = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
 

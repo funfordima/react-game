@@ -93,7 +93,7 @@ const WidgetTitle = styled.div`
 
 const ServiceContainer = styled.div`
   position: relative;
-  padding: 16px 16px 40px;
+  padding: 16px 16px 20px;
   // border-bottom: 5px solid #bbada0;
 `;
 
