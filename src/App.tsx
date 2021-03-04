@@ -151,6 +151,10 @@ const App: React.FC = () => {
     KeyD: directions.RIGHT,
     KeyW: directions.UP,
     KeyS: directions.DOWN,
+    ArrowLeft: directions.LEFT,
+    ArrowRight: directions.RIGHT,
+    ArrowUp: directions.UP,
+    ArrowDown: directions.DOWN,
   } as KeyCodeToDirectionType;
 
   const processGame = async () => {
@@ -232,7 +236,7 @@ const App: React.FC = () => {
   };
 
   const handleKeyPress = async ({ code }: KeyboardEvent) => {
-    if (['KeyA', 'KeyD', 'KeyW', 'KeyS'].includes(code)) {
+    if (['KeyA', 'KeyD', 'KeyW', 'KeyS', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(code)) {
       setCells(state => {
         if (state.gameState === gameStates.IDLE) {
           return {
