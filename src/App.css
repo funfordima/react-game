@@ -8,12 +8,43 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: #faf8ef;
-  color: #776e65;
-  font-family: clear sans, helvetica neue, Arial, sans-serif;
-  font-size: 18px;
 }
 
 #switcher:checked ~ [for='switcher']:after {
   left: 53px;
+}
+
+#switch-theme:checked ~ [for='switch-theme']:before {
+  background: #f9cb0e linear-gradient(#ef8d13, #fde23c);
+}
+#switch-theme:checked ~ [for='switch-theme']:after {
+  background: #25d025 radial-gradient(40% 35%, #5aef5a, #25d025 60%);
+  box-shadow: inset 0 3px 5px 1px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.4), 0 0 10px 2px rgba(0, 210, 0, 0.5);
+}
+#switch-cell:checked ~ [for='switch-cell']:before {
+  background: #f9cb0e linear-gradient(#ef8d13, #fde23c);
+}
+#switch-cell:checked ~ [for='switch-cell']:after {
+  background: #25d025 radial-gradient(40% 35%, #5aef5a, #25d025 60%);
+  box-shadow: inset 0 3px 5px 1px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.4), 0 0 10px 2px rgba(0, 210, 0, 0.5);
+}
+#switch-cells:checked ~ [for='switch-cells']:before {
+  background: #f9cb0e linear-gradient(#ef8d13, #fde23c);
+}
+#switch-cells:checked ~ [for='switch-cells']:after {
+  background: #25d025 radial-gradient(40% 35%, #5aef5a, #25d025 60%);
+  box-shadow: inset 0 3px 5px 1px rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.4), 0 0 10px 2px rgba(0, 210, 0, 0.5);
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.body {
+  background-color: #000;
 }

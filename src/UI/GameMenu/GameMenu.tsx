@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
 import OnOffButton from '../OnOffButton';
 import MusicSlider from '../MusicSlider';
-import { MusicContext } from '../../App';
-// import History from '../History';
+import { MusicContext, MainThemeContext } from '../../App';
+import ThemeSwitcher from '../ThemeSwitcher';
 
 const Overlay = styled.div`
   display: block;
@@ -130,6 +130,7 @@ interface GameMenuProps {
 
 const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
   const { setMusicVolume, setAudioVolume, musicVolume, audioVolume, handleClickHistory } = useContext(MusicContext);
+  const { toggleMainTheme, toggleCellsTheme, toggleCellTheme } = useContext(MainThemeContext);
 
   const handleMusicVolume = (value: number): void => {
     setMusicVolume(Number(value));
@@ -162,6 +163,18 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
           <ServiceContainer>
             <Span>Sound</Span>
             <MusicSlider id='audio' text='sound' callback={handleAudioVolume} value={audioVolume} />
+          </ServiceContainer>
+          <ServiceContainer className='flex'>
+            <Span>Main Theme</Span>
+            <ThemeSwitcher id='switch-theme' callback={toggleMainTheme} />
+          </ServiceContainer>
+          <ServiceContainer className='flex'>
+            <Span>Field Theme</Span>
+            <ThemeSwitcher id='switch-cells' callback={toggleCellsTheme} />
+          </ServiceContainer>
+          <ServiceContainer className='flex'>
+            <Span>Cell Theme</Span>
+            <ThemeSwitcher id='switch-cell' callback={toggleCellTheme} />
           </ServiceContainer>
           <ServiceContainer>
             <OnOffButton />

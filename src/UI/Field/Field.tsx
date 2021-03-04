@@ -21,7 +21,7 @@ const FieldTag = styled.div`
   position: relative;
 `;
 
-const Background = styled.div`
+const Background = styled.div<{ cellsTheme: boolean }>`
   padding: 5px;
   width: 450px;
   height: 450px;
@@ -30,13 +30,13 @@ const Background = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   align-content: space-between;
-  background-color: #bbada0;
+  background-color:  ${({ cellsTheme }) => cellsTheme ? '#f9cb0e' : '#bbada0'};
   border-radius: 10px;
   position: absolute;
 `;
 
 const Playground = styled(Background)`
-  background-color: transparent;
+  background-color: transparent; 
 `;
 
 const BackgroundCell = styled.div`
@@ -47,11 +47,12 @@ const BackgroundCell = styled.div`
   background-color: rgba(238, 228, 218, 0.35);
 `;
 
-const Cell = styled(BackgroundCell) <{ x: number, y: number, value: number, state: string }>`
+const Cell = styled(BackgroundCell) <{ x: number, y: number, value: number, state: string, cellTheme: boolean }>`
   transform: translate(${({ x }) => x * 110}px, ${({ y }) => y * 110}px);
   text-align: center;
   line-height: 100px;
   background-color: ${({ value }) => calculateBackgroundColor(value)};
+  border: 1px solid ${({ cellTheme }) => cellTheme ? '#f59014' : '#000'};
   position: absolute;
   transition-property: transform;
   transition: 100ms ease-in-out;
@@ -71,14 +72,16 @@ const Cell = styled(BackgroundCell) <{ x: number, y: number, value: number, stat
 
 interface FieldProps {
   cells: Array<cellsType>;
+  cellsTheme: boolean;
+  cellTheme: boolean;
 }
 
-const Field: React.FC<FieldProps> = ({ cells }) => {
+const Field: React.FC<FieldProps> = ({ cells, cellsTheme, cellTheme }) => {
   const inc = 1;
   return (
     <>
       <FieldTag>
-        <Background>
+        <Background cellsTheme={cellsTheme}>
           {/* prettier-ignore */
             Array
               .from(new Array(16), (_, i) => i)
@@ -86,9 +89,9 @@ const Field: React.FC<FieldProps> = ({ cells }) => {
                 <BackgroundCell key={i} />
               )}
         </Background>
-        <Playground>
+        <Playground cellsTheme={cellsTheme}>
           {cells.map(({ x, y, value, id, state }) => (
-            <Cell key={id} x={x} y={y} value={value + inc} state={state}>
+            <Cell key={id} x={x} y={y} value={value + inc} state={state} cellTheme={cellTheme}>
               {value}
             </Cell>
           ))}
