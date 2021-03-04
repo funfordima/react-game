@@ -47,7 +47,15 @@ interface MusicContextT {
   // setPlaybackRate:  React.Dispatch<React.SetStateAction<number>>,
 }
 
+interface MainThemeContextT {
+  value: boolean,
+  toggleMainTheme: () => void,
+  toggleCellsTheme: () => void,
+  toggleCellTheme: () => void,
+}
+
 export const MusicContext = createContext({} as MusicContextT);
+export const MainThemeContext = createContext({} as MainThemeContextT);
 
 const App: React.FC = () => {
   const initScore = (type: string, value = 0): number => {
@@ -72,6 +80,14 @@ const App: React.FC = () => {
     }
   };
 
+  const initMainTheme = (text: string): boolean => {
+    if (localStorage.getItem(text)) {
+      return JSON.parse(String(localStorage.getItem(text)));
+    }
+
+    return false;
+  }
+
   const [mainState, setCells] = useState(initMainState());
   const [bestScore, setBestScore] = useState(initScore('bestScore'));
   const [score, setScore] = useState(initScore('mainScore'));
@@ -80,6 +96,9 @@ const App: React.FC = () => {
   const [musicVolume, setMusicVolume] = useState(initScore('musicVolume', 20) as number);
   const [audioVolume, setAudioVolume] = useState(initScore('audioVolume', 20) as number);
   const [isOpenHistory, setOpenHistory] = useState(false);
+  const [mainTheme, setMainTheme] = useState(initMainTheme('mainTheme'));
+  const [cellsTheme, setCellsTheme] = useState(initMainTheme('cellsTheme'));
+  const [cellTheme, setCellTheme] = useState(initMainTheme('cellTheme'));
   const [isEnd, setEnd] = useState(false);
   // const [playbackRate, setPlaybackRate] = useState(0.75);
   const [musicPlay, setMusicPlay] = useState(false);
@@ -114,6 +133,18 @@ const App: React.FC = () => {
     setOpenHistory(true);
   };
 
+  const toggleMainTheme = (): void => {
+    setMainTheme((theme) => !theme);
+  }
+
+  const toggleCellsTheme = (): void => {
+    setCellsTheme((theme) => !theme);
+  }
+
+  const toggleCellTheme = (): void => {
+    setCellTheme((theme) => !theme);
+  }
+
   const musicController = {
     handlerToggleVolumeMusic,
     setMusicVolume,
@@ -122,6 +153,13 @@ const App: React.FC = () => {
     audioVolume,
     handleClickHistory,
     // setPlaybackRate
+  };
+
+  const mainThemeCtx = {
+    value: mainTheme,
+    toggleMainTheme,
+    toggleCellsTheme,
+    toggleCellTheme,
   };
 
   const handleClickBtnNewGame = () => {
@@ -309,45 +347,51 @@ const App: React.FC = () => {
 
   const records = JSON.parse(localStorage.getItem('records') as string);
 
+  useEffect(() => localStorage.setItem('mainTheme', JSON.stringify(mainTheme)), [mainTheme]);
+  useEffect(() => localStorage.setItem('cellsTheme', JSON.stringify(cellsTheme)), [cellsTheme]);
+  useEffect(() => localStorage.setItem('cellTheme', JSON.stringify(cellTheme)), [cellTheme]);
+
   return (
     <>
-      <Layout>
-        <OpenMenuBtn onClick={handleClickBtnOpen}>Menu</OpenMenuBtn>
-        <Heading>
-          <Title text='2048' />
-          <ScoreWrapper>
-            <ScoreContainer text='score'>
-              {score}
-              <Transition
-                nodeRef={nodeRef}
-                in={isShowMess}
-                timeout={200}
-                unmountOnExit
-                onEntered={() => setIsShowMess(false)}
-              >
-                {state => <ScoreAdd ref={nodeRef} className={`alert ${state}`}>{score}</ScoreAdd>}
-              </Transition>
-            </ScoreContainer>
-            <ScoreContainer text='best'>
-              {bestScore}
-            </ScoreContainer>
-          </ScoreWrapper>
-        </Heading>
-        <ControlPanel>
-          <GameIntro />
-          <Button onClick={handleClickBtnNewGame}>
-            New Game
+      <MainThemeContext.Provider value={mainThemeCtx}>
+        <Layout val={mainTheme}>
+          <OpenMenuBtn onClick={handleClickBtnOpen}>Menu</OpenMenuBtn>
+          <Heading>
+            <Title text='2048' />
+            <ScoreWrapper>
+              <ScoreContainer text='score'>
+                {score}
+                <Transition
+                  nodeRef={nodeRef}
+                  in={isShowMess}
+                  timeout={200}
+                  unmountOnExit
+                  onEntered={() => setIsShowMess(false)}
+                >
+                  {state => <ScoreAdd ref={nodeRef} className={`alert ${state}`}>{score}</ScoreAdd>}
+                </Transition>
+              </ScoreContainer>
+              <ScoreContainer text='best'>
+                {bestScore}
+              </ScoreContainer>
+            </ScoreWrapper>
+          </Heading>
+          <ControlPanel>
+            <GameIntro />
+            <Button onClick={handleClickBtnNewGame}>
+              New Game
         </Button>
-        </ControlPanel>
-        <Field cells={mainState.cells} />
-        <GameExplanation />
-        <MusicContext.Provider value={musicController}>
-          {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
-        </MusicContext.Provider>
-        {isOpenHistory && <History onClose={handleCloseHistoryWidget} records={records} />}
-        {isEnd && <EndGameWidget result={score} onClose={handleCloseEndGameWidget} />}
-      </Layout>
-      <Footer />
+          </ControlPanel>
+          <Field cells={mainState.cells} cellsTheme={cellsTheme} cellTheme={cellTheme} />
+          <GameExplanation />
+          <MusicContext.Provider value={musicController}>
+            {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
+          </MusicContext.Provider>
+          {isOpenHistory && <History onClose={handleCloseHistoryWidget} records={records} />}
+          {isEnd && <EndGameWidget result={score} onClose={handleCloseEndGameWidget} />}
+        </Layout>
+        <Footer val={mainTheme} />
+      </MainThemeContext.Provider>
     </>
   );
 };

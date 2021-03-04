@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { ReactComponent as GitSvg } from './footer/git.svg';
 import { ReactComponent as RSLogoSvg } from './footer/rs_school_js.svg';
 
-const FooterWrapper = styled.div`
+const FooterWrapper = styled.div<{ value: boolean }>`
   position: fixed;
   bottom: 0;
   width: 100%;
-  background-color: #fff;
+  background-color: ${({ value }) => value ? '#0C1921' : '#fff'};;
   box-shadow: 0 -1px 0 0 rgb(0 0 0 / 8%);
 `;
 
@@ -70,9 +70,13 @@ const Author = styled.a`
   }
 `;
 
-const Footer: React.FC = () => (
+interface FooterProps {
+  val: boolean;
+}
+
+const Footer: React.FC<FooterProps> = ({ val }) => (
   <>
-    <FooterWrapper>
+    <FooterWrapper value={val}>
       <FooterLineContainer>
         <AuthorContainer>
           <AuthorWrapper>
