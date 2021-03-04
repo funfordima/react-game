@@ -8,5 +8,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 2. Fork this repository: react-game
 3. Clone your newly created repo: https://github.com/<%your_github_username%>/react-game/
 4. Go to folder react-game
-5. To install all dependencies use npm install
-6. To start app use npm run build (production mode) or npm run dev (development mode)
+5. Switch branch to 'react-game'
+6. To install all dependencies use npm install
+7. To start app use npm run build (production mode) or npm run dev (development mode)
