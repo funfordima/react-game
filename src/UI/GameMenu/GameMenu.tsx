@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-// import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
+import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
 import OnOffButton from '../OnOffButton';
 import MusicSlider from '../MusicSlider';
 import { MixCtx } from '../../context/appContext';
@@ -150,7 +150,7 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
           <WidgetHeader>
             <WidgetHeaderTitleContainer>
               <WidgetBtnClose onClick={closeMenu}>
-                {/* <BtnCloseSvg /> */}
+                <BtnCloseSvg />
               </WidgetBtnClose>
               <WidgetTitle>
                 Menu
