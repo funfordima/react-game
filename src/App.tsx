@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, createContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import useSound from 'use-sound';
 import { Transition } from 'react-transition-group';
 import {
   KeyCodeToDirectionType,
   MainState,
-  MusicContextT,
-  MainThemeContextT,
+  // MusicContextT,
+  // MainThemeContextT,
   RecordType,
 } from './types';
 import Layout from './UI/Layout';
@@ -16,11 +16,14 @@ import ControlPanel from './UI/ControlPanel';
 import { moveCells, directions, initCells, delAndIncreaseCell, addCell } from './logic';
 import Heading from './UI/Heading';
 import Title from './UI/Title';
+// import { MainThemeContext } from './appContext';
+import { MixCtx } from './context/appContext';
 import ScoreWrapper from './UI/Score/ScoreWrapper';
 import GameIntro from './UI/GameIntro';
 import GameExplanation from './UI/GameExplanation';
 import ScoreAdd from './UI/Score/ScoreAdditional';
-import OpenMenuBtn, { GameMenu } from './UI/GameMenu';
+import GameMenu from './UI/GameMenu';
+import OpenMenuBtn from './UI/GameMenu/OpenMenuBtn';
 import History from './UI/History';
 import EndGameWidget from './UI/EndGameWidget';
 import Footer from './UI/Footer';
@@ -34,8 +37,8 @@ const gameStates = {
 };
 const soundUrl = '/music.mp3';
 
-export const MusicContext = createContext({} as MusicContextT);
-export const MainThemeContext = createContext({} as MainThemeContextT);
+// export const MusicContext = createContext({} as MusicContextT);
+// export const MainThemeContext = createContext({} as MainThemeContextT);
 
 const App: React.FC = () => {
   const initMainState = (): MainState => {
@@ -134,17 +137,30 @@ const App: React.FC = () => {
     setPlay((v) => !v);
   };
 
-  const musicController = {
+  // const musicController = {
+  //   handlerToggleVolumeMusic,
+  //   setMusicVolume,
+  //   setAudioVolume,
+  //   musicVolume,
+  //   audioVolume,
+  //   handleClickHistory,
+  //   // setPlaybackRate
+  // };
+
+  // const mainThemeCtx = {
+  //   value: mainTheme,
+  //   toggleMainTheme,
+  //   toggleCellsTheme,
+  //   toggleCellTheme,
+  // };
+
+  const mix = {
     handlerToggleVolumeMusic,
     setMusicVolume,
     setAudioVolume,
     musicVolume,
     audioVolume,
     handleClickHistory,
-    // setPlaybackRate
-  };
-
-  const mainThemeCtx = {
     value: mainTheme,
     toggleMainTheme,
     toggleCellsTheme,
@@ -341,7 +357,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <MainThemeContext.Provider value={mainThemeCtx}>
+      <MixCtx.Provider value={mix}>
         <Layout val={mainTheme}>
           <Button onClick={handleClickBtnPlay}>
             Autoplay
@@ -375,14 +391,14 @@ const App: React.FC = () => {
           </ControlPanel>
           <Field cells={mainState.cells} cellsTheme={cellsTheme} cellTheme={cellTheme} />
           <GameExplanation />
-          <MusicContext.Provider value={musicController}>
-            {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
-          </MusicContext.Provider>
+          {/* <MusicContext.Provider value={musicController}> */}
+          {isOpenMenu && <GameMenu closeMenu={handleClickBtnOpen} />}
+          {/* </MusicContext.Provider> */}
           {isOpenHistory && <History onClose={handleCloseHistoryWidget} records={records} />}
           {isEnd && <EndGameWidget result={score} onClose={handleCloseEndGameWidget} />}
         </Layout>
         <Footer val={mainTheme} />
-      </MainThemeContext.Provider>
+      </MixCtx.Provider>
     </>
   );
 };

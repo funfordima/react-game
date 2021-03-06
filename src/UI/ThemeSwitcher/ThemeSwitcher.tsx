@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-// import { MainThemeContext } from '../../App';
 
 const Input = styled.input`
   display: none;

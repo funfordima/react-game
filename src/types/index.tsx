@@ -38,3 +38,16 @@ export type RecordType = {
   name: string,
   value: number,
 };
+
+export interface Mix {
+  handlerToggleVolumeMusic: () => void,
+  setMusicVolume: React.Dispatch<React.SetStateAction<number>>,
+  setAudioVolume: React.Dispatch<React.SetStateAction<number>>,
+  musicVolume: number,
+  audioVolume: number,
+  handleClickHistory: () => void,
+  value: boolean,
+  toggleMainTheme: () => void,
+  toggleCellsTheme: () => void,
+  toggleCellTheme: () => void,
+};

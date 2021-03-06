@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
+// import { ReactComponent as BtnCloseSvg } from './btn-close.svg';
 import OnOffButton from '../OnOffButton';
 import MusicSlider from '../MusicSlider';
-import { MusicContext, MainThemeContext } from '../../App';
+import { MixCtx } from '../../context/appContext';
 import ThemeSwitcher from '../ThemeSwitcher';
 
 const Overlay = styled.div`
@@ -129,8 +129,9 @@ interface GameMenuProps {
 }
 
 const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
-  const { setMusicVolume, setAudioVolume, musicVolume, audioVolume, handleClickHistory } = useContext(MusicContext);
-  const { toggleMainTheme, toggleCellsTheme, toggleCellTheme } = useContext(MainThemeContext);
+  const { toggleMainTheme, toggleCellsTheme, toggleCellTheme, setMusicVolume, setAudioVolume, musicVolume, audioVolume, handleClickHistory, handlerToggleVolumeMusic } = useContext(MixCtx);
+  // const { setMusicVolume, setAudioVolume, musicVolume, audioVolume, handleClickHistory, handlerToggleVolumeMusic } = useContext(MusicContext);
+  // const { toggleMainTheme, toggleCellsTheme, toggleCellTheme } = useContext(MainThemeContext);
 
   const handleMusicVolume = (value: number): void => {
     setMusicVolume(Number(value));
@@ -149,7 +150,7 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
           <WidgetHeader>
             <WidgetHeaderTitleContainer>
               <WidgetBtnClose onClick={closeMenu}>
-                <BtnCloseSvg />
+                {/* <BtnCloseSvg /> */}
               </WidgetBtnClose>
               <WidgetTitle>
                 Menu
@@ -177,7 +178,7 @@ const GameMenu: React.FC<GameMenuProps> = ({ closeMenu }) => {
             <ThemeSwitcher id='switch-cell' callback={toggleCellTheme} />
           </ServiceContainer>
           <ServiceContainer>
-            <OnOffButton />
+            <OnOffButton handlerToggleVolumeMusic={handlerToggleVolumeMusic} />
           </ServiceContainer>
           <ServiceContainer>
             <Span onClick={handleClickHistory}>Battle History</Span>
